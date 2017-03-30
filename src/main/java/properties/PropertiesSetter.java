@@ -1,6 +1,7 @@
 package properties;
 
 import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.ex.ConversionException;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
@@ -19,18 +20,18 @@ public class PropertiesSetter {
     /**
      * Set object's properties according to provided config. Target object must
      * have setProperty or isProperty (in case of boolean) and setProperty methods.
-     * @param o target object
-     * @param cl class of the target object
+     * @param target target object
+     * @param clazz class of the target object
      * @param config configurations
-     * @throws NoSuchMethodException if a matching method is not found or if the name is "&lt;init&gt;"or "&lt;clinit&gt;".
-     * @throws IllegalAccessException if the method is an instance method and the specified object argument is
-     * not an instance of the class or interface declaring the underlying method (or of a subclass or implementor
-     * thereof); if the number of actual and formal parameters differ; if an unwrapping conversion for primitive
-     * arguments fails; or if, after possible unwrapping, a parameter value cannot be converted to the corresponding
-     * formal parameter type by a method invocation conversion.
+     * @throws NoSuchMethodException if a getter or setter is not found or if the name is "&lt;init&gt;"or "&lt;clinit&gt;".
+     * @throws ClassCastException if target is not instance of class represented with {@code clazz}
+     * @throws ConversionException if the value is not compatible with the setter argument type
      */
-    public static void setProperties(Object o, Class<?> cl, Configuration config)
-            throws NoSuchMethodException, IllegalAccessException {
+    public static void setProperties(Object target, Class<?> clazz, Configuration config)
+            throws NoSuchMethodException, ConversionException, ClassCastException {
+        if (!target.getClass().isInstance(clazz) && !target.getClass().equals(clazz))
+            throw new ClassCastException(target.getClass() + " class is not instance of " + clazz);
+
         Iterator<String> keys = config.getKeys();
         while(keys.hasNext()){
             String key = keys.next();
@@ -38,17 +39,17 @@ public class PropertiesSetter {
             try {
                 Method getter;
                 try {
-                    getter = cl.getMethod("get" + propertyName);
+                    getter = clazz.getMethod("get" + propertyName);
                 } catch (NoSuchMethodException e) {
                     // if a boolean property
-                    getter = cl.getMethod("is" + propertyName);
+                    getter = clazz.getMethod("is" + propertyName);
                 }
 
                 Class<?> getterReturnType = getter.getReturnType();
 
-                Method setter = cl.getMethod("set" + propertyName, getterReturnType);
-                setter.invoke(o, config.get(getterReturnType, key));
-            } catch (InvocationTargetException e) {
+                Method setter = clazz.getMethod("set" + propertyName, getterReturnType);
+                setter.invoke(target, config.get(getterReturnType, key));
+            } catch (InvocationTargetException | IllegalAccessException e) {
                 e.printStackTrace();
             }
         }

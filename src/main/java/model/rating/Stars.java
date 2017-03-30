@@ -13,6 +13,7 @@ public enum Stars {
         this.value = num;
     }
 
+    /** @return the integer equivalent to this enum */
     public int getValue() {
         return value;
     }
