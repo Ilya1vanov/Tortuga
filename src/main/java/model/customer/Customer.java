@@ -13,5 +13,6 @@ import org.apache.log4j.Logger;
  * @author Ilya Ivanov
  */
 public class Customer {
+    /* log4j logger */
     private static final Logger log = Logger.getLogger(Customer.class);
 }

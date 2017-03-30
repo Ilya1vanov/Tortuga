@@ -1,29 +1,30 @@
 package properties;
 
-import static org.junit.Assert.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Created by Илья on 30.03.2017.
  */
 public class PropertiesLoaderTest {
-    @org.junit.Before
+    @Before
     public void setUp() throws Exception {
 
     }
 
-    @org.junit.After
+    @After
     public void tearDown() throws Exception {
 
     }
 
-    @org.junit.Test
+    @Test
     public void loadProperties() throws Exception {
 
     }
 
-    @org.junit.Test
+    @Test
     public void loadXMLConfiguration() throws Exception {
 
     }
-
 }

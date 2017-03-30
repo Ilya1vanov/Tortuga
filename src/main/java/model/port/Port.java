@@ -12,6 +12,7 @@ import model.order.Order;
  * @author Ilya Ivanov
  */
 public class Port implements Runnable {
+    /* log4j logger */
     private static final Logger log = Logger.getLogger(Port.class);
 
     @Override

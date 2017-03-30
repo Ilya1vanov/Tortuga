@@ -16,6 +16,7 @@ import model.rating.Rating;
  * @author Ilya Ivanov
  */
 public class Ship implements Runnable {
+    /* log4j logger */
     private static final Logger log = Logger.getLogger(Ship.class);
 
 

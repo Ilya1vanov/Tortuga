@@ -78,6 +78,11 @@
             <version>4.12</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>pl.pragmatists</groupId>
+            <artifactId>JUnitParams</artifactId>
+            <version>1.0.4</version>
+        </dependency>
         <!--<dependency>-->
             <!--<groupId>org.jacoco</groupId>-->
             <!--<artifactId>org.jacoco.build</artifactId>-->
