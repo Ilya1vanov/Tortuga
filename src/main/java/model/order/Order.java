@@ -1,43 +1,111 @@
 package model.order;
 
-import model.port.Port;
-import org.apache.log4j.Logger;
-import model.ship.Ship;
-import model.cargo.Cargo;
+import model.ship.Carrier;
+import org.jscience.physics.amount.Amount;
 
-import java.util.List;
+import javax.measure.quantity.Mass;
+import javax.measure.quantity.Volume;
+import java.util.Date;
+import java.util.Map;
 
 /**
- * <p>Order for transportation. User by {@link Ship Ships} to deliver {@link Cargo Cargos}.</p>
  * @author Ilya Ivanov
  */
 public class Order {
-    /* log4j logger */
-    private static final Logger log = Logger.getLogger(Order.class);
+    /* ship, that executes this order */
+    private Carrier carrier;
 
-    /* ship, that executes this order*/
-    Ship transporter;
+    /* name of point of departure */
+    private String from;
 
-    /* point of departure port */
-    Port pointOfDeparture;
+    /* name of destination */
+    private String to;
 
-    /* destination port */
-    Port destination;
+    /* product to transport
+    * mapping: name -> number of items */
+    private Map<String, Integer> notation;
 
-    /* cargo to transport */
-    List<Cargo> cargo;
+    /* total weight of product */
+    private Amount<Mass> totalWeight;
 
-    /* is order was taken flag */
-    boolean taken;
+    /* total volume of product */
+    private Amount<Volume> totalVolume;
 
-    /* done flag */
-    boolean done;
+    /* time and date when order was taken */
+    private Date taken;
 
-    public void take(Ship ship) {
-        transporter = ship;
+    /* time and date when order was completed */
+    private Date completed;
+
+    /**
+     * @return true if and only if this order was taken
+     * @see #getTaken()
+     */
+    public boolean isTaken() {
+        return !(taken == null);
     }
 
-    public void done() {
-        done = true;
+    /**
+     * @return time and date, then this order was taken; null if it has been not taken yet
+     * @see #isTaken()
+     */
+    public Date getTaken() {
+        return taken;
+    }
+
+    /**@param carrier {@link Carrier} that take this order */
+    public void take(Carrier carrier) {
+        taken = new Date();
+        this.carrier = carrier;
+    }
+
+    /**
+     * @return true if and only if this order was completed
+     * @see #getCompleted()
+     */
+    public boolean isCompleted() {
+        return !(completed == null);
+    }
+
+    /**
+     * @return time and date, then this order was completed; null if it has been not completed yet
+     * @see #isCompleted()
+     */
+    public Date getCompleted() {
+        return completed;
+    }
+
+    /** Mark order as 'completed' and set completion time. */
+    public void complete() {
+        completed = new Date();
+    }
+
+    /** @return {@link Carrier}, that executes this order */
+    public Carrier getCarrier() {
+        return carrier;
+    }
+
+    public Map<String, Integer> getNotation() {
+        return notation;
+    }
+
+    /** @return total weight of product */
+    public Amount<Mass> getTotalWeight() {
+        return totalWeight;
+    }
+
+    /** @return total volume of product */
+    public Amount<Volume> getTotalVolume() {
+        return totalVolume;
+    }
+
+    /** @return name of point of departure */
+    public String getFrom() {
+        return from;
+    }
+
+    /** @return name of destination */
+    public String getTo() {
+        return to;
     }
 }

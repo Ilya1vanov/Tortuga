@@ -1,11 +1,11 @@
 package model.stock;
 
 import model.cargo.Cargo;
-import model.port.Port;
+import model.order.Order;
 import org.apache.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * Store {@link Cargo Cargo}.
@@ -18,6 +18,14 @@ public class Stock {
     /* total capacity */
     int capacity;
 
-    /* cargo stored in this stoke */
-    List<Cargo> cargo = new ArrayList<>(250);
+    /* number of currently storing items */
+    int nowStore;
+
+    /* orders mapping: order -> collection of cargo */
+    private Map<Order, Collection<Cargo>> orders;
+
+    /** @return collection of available orders */
+    public Collection<Order> getOrders() {
+        return orders.keySet();
+    }
 }
