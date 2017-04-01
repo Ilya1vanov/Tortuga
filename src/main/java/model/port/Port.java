@@ -53,7 +53,6 @@ public class Port implements Runnable {
     public Port(String name) {
         this.id = idCounter.incrementAndGet();
         this.name = name;
-
     }
 
 
