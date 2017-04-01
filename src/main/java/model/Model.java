@@ -23,7 +23,7 @@ public class Model {
     private TempDirectory logSessionDir = new TempDirectory();
 
     /* logs path */
-    private static String LOGS_PATH = "logs";
+    private static final String LOGS_PATH = "logs";
 
     public File getLogSessionDir() {
         try {

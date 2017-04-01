@@ -1,10 +1,14 @@
 package model.ship;
 
-import model.order.Order;
+import javafx.beans.value.ObservableObjectValue;
+import model.cargo.Storable;
+import model.office.TransportContract;
+import model.office.lables.Carrier;
+import model.procuring.customer.Customer;
+import model.stock.Stock;
 import org.apache.log4j.Logger;
 import model.port.Port;
 import model.pier.Pier;
-import model.cargo.Cargo;
 import model.rating.Rating;
 import org.jscience.physics.amount.Amount;
 
@@ -12,18 +16,19 @@ import javax.measure.quantity.Mass;
 import javax.measure.quantity.Velocity;
 import javax.measure.quantity.Volume;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * <p>Transport ship. Able to transport {@link Cargo Cargos} according to the {@link Order Order}.
+ * <p>Transport ship. Able to transport {@link Storable Cargos} according to the {@link TransportContract}.
  * Also can come to the {@link Port Port}, moor to the {@link Pier Pier}. Load or unload {@code Cargos}.
  * If there is some orders ship can take if or wait otherwise.</p>
  * <p>When ship moors to the {@code Pier}, it specifies time of halt. If this
  * time was exceeded, {@link Rating rating} of this {@code Ship} falls.</p>
  * @author Ilya Ivanov
  */
-public class Ship implements Runnable, Comparable<Ship>, Carrier {
+public class Ship implements Runnable, Comparable<Ship>, Carrier<Storable> {
     /* log4j logger */
     private Logger log = Logger.getLogger(getClass());
 
@@ -54,16 +59,16 @@ public class Ship implements Runnable, Comparable<Ship>, Carrier {
     private Rating rating = new Rating();
 
     /* transported cargo. defaults to 50*/
-    private List<Cargo> transportingCargo = new ArrayList<>(50);
+    private List<Storable> transportingStorable = new ArrayList<>(50);
 
-    /* current order */
-    Order order;
+    /* current TransportContract */
+    TransportContract<Customer<Storable>, Ship, Storable> transportContract;
 
     /* current pier */
     Pier pier;
 
     /* current ship status */
-    ShipStatus status;
+    ObservableObjectValue<ShipStatus> status;
 
     /** @param name {@code Ship} name */
     public Ship(String name) {
@@ -71,7 +76,7 @@ public class Ship implements Runnable, Comparable<Ship>, Carrier {
         this.name = name;
     }
 
-    /** @return current rating*/
+    /** @return current rating */
     public Rating getRating() {
         return rating;
     }
@@ -88,42 +93,47 @@ public class Ship implements Runnable, Comparable<Ship>, Carrier {
 //        }
 //    }
 
+    @Override
+    public void run() {
+        while(!Thread.currentThread().isInterrupted()) {
+            // 1. try to take TransportContract
+            takeOrder();
+            // 2.
+        }
+    }
+
     private void takeOrder() {
-        final List<Order> orders = pier.getPort().getOrders();
-        synchronized (orders) {
-            while(getSuitableOrder(orders) == null)
+        Stock stock = pier.getStock();
+        synchronized (stock) {
+            final Collection<TransportContract> TransportContracts = stock.getOrders();
+            while(getSuitableOrder(TransportContracts) == null)
                 try {
-                    orders.wait();
+                    log.info("Waiting for suitable orders");
+                    stock.wait();
                 } catch (InterruptedException e) {
                     // suppress and wait again
-                    e.printStackTrace();
+                    log.trace(e);
                 }
-            Order order = getSuitableOrder(orders);
-            order.take(this);
+            TransportContract transportContract = getSuitableOrder(TransportContracts);
+
+            assert transportContract != null : "Concurrency bug: getSuitableOrder returned null";
+            transportContract.take(this);
+            log.info("Order was taken: " + transportContract.toString());
         }
     }
 
     /**
-     * Finds first suitable order and returns. Returns null if nothing
+     * Finds first suitable TransportContract and returns. Returns null if nothing
      * found.
-     * @param orders list of orders
-     * @return first suitable order; null if absent
+     * @param transportContracts list of TransportContracts
+     * @return first suitable TransportContract; null if absent
      */
-    private Order getSuitableOrder(List<Order> orders) {
-        for (Order order : orders) {
-            if (order.getTotalVolume().compareTo(volume) <= 0 && order.getTotalWeight().compareTo(carrying) <= 0)
-                return order;
+    private TransportContract getSuitableOrder(Collection<TransportContract> transportContracts) {
+        for (TransportContract transportContract : transportContracts) {
+            if (transportContract.getTotalVolume().compareTo(volume) <= 0 && transportContract.getTotalWeight().compareTo(carrying) <= 0)
+                return transportContract;
         }
         return null;
-    }
-
-    @Override
-    public void run() {
-        while(!Thread.currentThread().isInterrupted()) {
-            // 1. try to take order
-            takeOrder();
-            // 2.
-        }
     }
 
     /* comparison by rating */

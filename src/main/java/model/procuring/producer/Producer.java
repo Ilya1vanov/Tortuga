@@ -1,33 +1,44 @@
 package model.procuring.producer;
 
-import model.cargo.Cargo;
-import model.cargo.MultipleFactory;
-import model.order.Order;
+import model.procuring.factories.MultipleFactory;
+import model.office.lables.Producible;
+import model.office.lables.Performer;
 import model.procuring.provider.Provider;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
- * Someone who is able to produce products according to the order.
+ * Class that is able to produce items according to the {@code notations}.
  * @author Ilya Ivanov
- * @param <O> order
- * @param <O> product
+ * @param <R> production
  */
-public abstract class Producer<O extends Order, P extends Cargo> {
-    /** someone who is able to deliver production according */
-    Provider provider;
+public abstract class Producer<R extends Producible> implements Performer {
+    /* factory that is able to produce collections of objects */
+    private MultipleFactory<R> factory;
 
-    /* factory that is able to produce collections of objects*/
-    MultipleFactory factory;
-
-    protected Producer(Provider provider, MultipleFactory factory) {
-        this.provider = provider;
+    /**
+     * @param factory class that is able
+     */
+    Producer(MultipleFactory<R> factory) {
         this.factory = factory;
     }
 
     /**
      * Produces products and send them to {@link Provider}
-     * @param order order
+     * @param notation notation
      */
-    public abstract void produceAndSend(O order);
+    public Collection<R> produce(Map<String, Integer> notation) {
+        Integer accumulated = notation.keySet().stream().map(notation::get).mapToInt(Integer::intValue).sum();
+        List<R> implementation = new ArrayList<>(accumulated);
+
+        for (Map.Entry<String, Integer> entry : notation.entrySet()) {
+            final Collection<R> collection = factory.create(entry.getKey(), entry.getValue());
+            implementation.addAll(collection);
+            collection.clear();
+        }
+        return implementation;
+    }
 }

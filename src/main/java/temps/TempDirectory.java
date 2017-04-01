@@ -51,13 +51,13 @@ public class TempDirectory {
     /**
      * Creates a new directory that did not exist before in the specified directory.
      * Repeated invocation doesn't create new instance. Just return previously created dir.
-     * Returns {@link File} object of created temp directory.
+     * Returns {@link File} object of created temp directory. This method is thread safe.
      * @param dir the path to directory in which to create the directory
      * @param deleteOnExit if true directory will be deleted when the virtual machine terminates
      * @return {@link File} object of created temp directory.
      * @throws IOException if an I/O error occurs or dir does not exist
      */
-    public File getTempDir(String dir, boolean deleteOnExit) throws IOException {
+    public synchronized File getTempDir(String dir, boolean deleteOnExit) throws IOException {
         if (tempDir == null) {
             final Path path = Files.createTempDirectory(Paths.get(dir), null);
             tempDir = new File(path.toString());

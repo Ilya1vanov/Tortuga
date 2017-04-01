@@ -15,7 +15,7 @@ public class ShipTest {
 
     @Before
     public void setUp() {
-        sut = new Ship();
+//        sut = new Ship();
     }
 
     @Test
