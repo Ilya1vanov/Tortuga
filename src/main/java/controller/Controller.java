@@ -11,5 +11,8 @@ public class Controller {
         return ourInstance;
     }
 
-    private Controller() {}
+    private Controller() {
+        // observe results
+        // restart fallen
+    }
 }

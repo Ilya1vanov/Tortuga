@@ -1,7 +1,7 @@
 package model.cargo;
 
 
-import model.procuring.factories.SingleFactory;
+import model.server.pdcs.factories.SingleFactory;
 
 /**
  * @author Ilya Ivanov

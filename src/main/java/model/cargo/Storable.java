@@ -1,8 +1,8 @@
 package model.cargo;
 
-import model.office.lables.Producible;
-import model.office.lables.Transportable;
-import model.office.lables.Carrier;
+import model.server.interfaces.parties.Carrier;
+import model.server.interfaces.production.Producible;
+import model.server.interfaces.production.Transportable;
 import org.jscience.physics.amount.Amount;
 
 import javax.measure.quantity.Mass;

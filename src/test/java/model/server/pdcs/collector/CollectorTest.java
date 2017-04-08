@@ -1,0 +1,39 @@
+package model.server.pdcs.collector;
+
+import junitparams.JUnitParamsRunner;
+import model.server.interfaces.parties.Carrier;
+import model.server.interfaces.targetareas.CollectingArea;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.mock;
+
+/**
+ * @author Ilya Ivanov
+ */
+@RunWith(JUnitParamsRunner.class)
+public class CollectorTest {
+    Collector SUT;
+
+    CollectingArea collectingArea = mock(CollectingArea.class);
+
+    @Before
+    public void setUp() {
+        SUT = new Collector(collectingArea);
+    }
+
+    @Test
+    public void collectorShouldImplementCarrier() throws Exception {
+        assertThat("Collector should implement Carrier", SUT, is(instanceOf(Carrier.class)));
+    }
+
+    @Test
+    public void collectorShould() throws Exception {
+
+    }
+
+}

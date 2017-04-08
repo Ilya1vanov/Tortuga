@@ -1,17 +1,15 @@
 package properties;
 
 import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.PropertiesConfiguration;
 import org.apache.commons.configuration2.ex.ConversionException;
 import org.junit.Before;
-import org.junit.runner.RunWith;
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.junit.runner.RunWith;
 
-import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 /**
  * @author Ilya Ivanov

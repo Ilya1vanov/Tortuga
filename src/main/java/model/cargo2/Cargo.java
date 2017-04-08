@@ -1,19 +1,22 @@
 package model.cargo2;
 
-import model.office.lables.Producible;
-import model.office.lables.Storable;
-import model.office.lables.Transportable;
+import model.server.interfaces.production.Producible;
+import model.server.interfaces.production.Storable;
+import model.server.interfaces.production.Transportable;
 import org.jscience.physics.amount.Amount;
 
 import javax.measure.quantity.Mass;
 import javax.measure.quantity.Volume;
 
-import static javax.measure.unit.SI.*;
+import java.io.Serializable;
+
+import static javax.measure.unit.SI.CUBIC_METRE;
+import static javax.measure.unit.SI.KILOGRAM;
 
 /**
  * @author Ilya Ivanov
  */
-public enum Cargo implements Producible, Transportable, Storable {
+public enum Cargo implements Producible, Transportable, Storable, Serializable {
     GOLD("gold",  Amount.valueOf(200, CUBIC_METRE),  Amount.valueOf(20, KILOGRAM ));
 
     Cargo(String name, Amount<Volume> volume, Amount<Mass> mass) {
@@ -43,10 +46,13 @@ public enum Cargo implements Producible, Transportable, Storable {
 
     /** @return cargo's mass */
     public Amount<Mass> getMass() {
+
         return mass;
     }
 
-    static Cargo produce(String cargo) {
-        return Cargo.valueOf(cargo);
-    }
+
+
+//    static Cargo produce(String cargo) {
+//        return Cargo.valueOf(cargo);
+//    }
 }
