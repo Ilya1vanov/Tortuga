@@ -29,12 +29,11 @@ public class Rating implements Comparable<Rating>, Serializable {
 
     /**
      * Get rank and calculate new average.
-     * @param rank new rank
-     * @throws IllegalArgumentException if rank is null
+     * @param rank new rank; null values are ignored
      */
-    public void rate(Stars rank) throws IllegalArgumentException {
+    public void rate(Stars rank) {
         if (rank == null)
-            throw new IllegalArgumentException("Rate must not be null: " + "[" + rank + "]");
+            return;
         currentRank = (currentRank * timesRated + rank.getValue()) / ++timesRated;
     }
 

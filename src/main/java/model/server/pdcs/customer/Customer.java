@@ -16,6 +16,7 @@ import model.server.pdcs.factories.SingleFactory;
 import model.server.pdcs.producer.Producer;
 import model.server.pdcs.provider.Provider;
 import model.server.pdcs.handbook.Handbook;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,7 +28,10 @@ import java.util.stream.Collectors;
  * @param <PTS> {@link Producible}, {@link Transportable} and {@link Storable} production
  * @author Ilya Ivanov
  */
-public class Customer<PTS extends Producible & Transportable & Storable> implements Client {
+public final class Customer<PTS extends Producible & Transportable & Storable> implements Client {
+    /** log4j logger */
+    private static final Logger log = Logger.getLogger(Customer.class);
+
     /** class that is able to produce items according to {@link CommodityContract} */
     private final Producer<PTS> producer;
 
@@ -69,14 +73,16 @@ public class Customer<PTS extends Producible & Transportable & Storable> impleme
 
         final Collection<Pair<String, Integer>> notations = new ArrayList<>(names.size());
 
-        notations.addAll(names.stream().map(name -> new Pair<>(name, 1)).collect(Collectors.toList()));
+        notations.addAll(names.stream().map(name -> new Pair<>(name, 4)).collect(Collectors.toList()));
 
         ProductionOrder<Customer<PTS>, ? extends Producer<PTS>, PTS> order;
         order = new ProductionOrder<>(this, producer, notations);
+
+        log.info("The order was made");
         final Collection<? extends PTS> production = producer.produce(order);
 
-        TransportContract<Client, ? extends Carrier<PTS>, PTS> contract;
-        contract = new TransportContract<>(this, notations, "ToTo", "FromFrom");
+        TransportContract<Client, Carrier<PTS>, PTS> contract;
+        contract = new TransportContract<>(this, notations, "Tortuga", "Minsk");
 
         provider.deliver(contract, production);
     }

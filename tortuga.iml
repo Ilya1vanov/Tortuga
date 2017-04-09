@@ -30,6 +30,7 @@
     <orderEntry type="library" name="Maven: org.apache.commons:beanutils:2.1.1" level="project" />
     <orderEntry type="library" name="Maven: commons-beanutils:commons-beanutils:1.9.3" level="project" />
     <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.2.2" level="project" />
+    <orderEntry type="library" name="Maven: com.sun.xml.bind:jaxb-ri:2.2.11" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:r09" level="project" />
   </component>
 </module>

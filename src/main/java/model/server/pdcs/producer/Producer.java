@@ -4,7 +4,9 @@ import javafx.util.Pair;
 import model.server.interfaces.parties.Performer;
 import model.server.interfaces.production.Producible;
 import model.server.pdcs.contracts.ProductionOrder;
+import model.server.pdcs.customer.Customer;
 import model.server.pdcs.factories.MultipleFactory;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,7 +17,10 @@ import java.util.List;
  * @author Ilya Ivanov
  * @param <P> {@code Producible} production
  */
-public class Producer<P extends Producible> implements Performer {
+public final class Producer<P extends Producible> implements Performer {
+    /** log4j logger */
+    private static final Logger log = Logger.getLogger(Producer.class);
+
     /* factory that is able to produce collections of objects */
     private final MultipleFactory<P> factory;
 
@@ -45,6 +50,7 @@ public class Producer<P extends Producible> implements Performer {
             collection.clear();
         }
 
+        log.info("Goods produced");
         return implementation;
     }
 }

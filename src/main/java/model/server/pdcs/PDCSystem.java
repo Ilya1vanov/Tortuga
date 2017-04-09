@@ -56,12 +56,17 @@ public class PDCSystem<PTS extends Producible & Transportable & Storable> implem
 
     @Override
     public final void run() {
+        log.info("PDC cycle was started!");
         if (collectingArea.isCollectingRequired()) {
+            log.info("Perform collecting");
             collector.collect();
             System.runFinalization();
             System.gc();
         }
-        if (supplyingArea.isSupplyingRequired())
+        if (supplyingArea.isSupplyingRequired()) {
+            log.info("Perform supplying");
             customer.makeAnOrder();
+        }
+        log.info("PDC cycle is over");
     }
 }

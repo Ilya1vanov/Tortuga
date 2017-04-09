@@ -1,5 +1,6 @@
 package model.server.interfaces.targetareas;
 
+import model.server.exceptions.CapacityViolationException;
 import model.server.interfaces.parties.Carrier;
 import model.server.interfaces.parties.Client;
 import model.server.interfaces.production.Storable;
@@ -23,7 +24,7 @@ public interface SupplyingArea<TS extends Transportable & Storable> {
      * @param products products according to the {@code transportContract}.
      * @see CommodityContract#isAccepted()
      */
-    void supply(TransportContract<Client, ? extends Carrier<TS>, TS> transportContract, Collection<? extends TS> products);
+    void supply(TransportContract<Client, Carrier<TS>, TS> transportContract, Collection<? extends TS> products) throws CapacityViolationException;
 
     /**
      * Ask area if it needs supply.

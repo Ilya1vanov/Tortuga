@@ -1,7 +1,6 @@
 package model.server.interfaces.targetareas;
 
 import javafx.util.Pair;
-import model.server.remote.exceptions.OrderAccessException;
 import model.server.pdcs.contracts.CommodityContract;
 import model.server.pdcs.contracts.TransportContract;
 import model.server.interfaces.parties.Carrier;
@@ -9,6 +8,7 @@ import model.server.interfaces.parties.Client;
 import model.server.interfaces.production.Storable;
 import model.server.interfaces.production.Transportable;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.Collection;
 
@@ -18,7 +18,7 @@ import java.util.Collection;
  * @see CommodityContract#isAccepted()
  * @author Ilya Ivanov
  */
-public interface OrdersDispatchArea<TS extends Transportable & Storable> {
+public interface OrdersDispatchArea<TS extends Transportable & Storable> extends Serializable {
     /**
      * Take new (not {@link CommodityContract#isAccepted() isAccepted()}) order.
      * <p><b>Note: </b>Implementation must be thread-safe.</p>

@@ -5,6 +5,7 @@ import model.server.interfaces.production.Storable;
 import model.server.interfaces.production.Transportable;
 import model.server.interfaces.targetareas.CollectingArea;
 import model.server.pdcs.contracts.TransportContract;
+import org.apache.log4j.Logger;
 
 /**
  * <p>Entity that cares about collecting of completed orders.</p>
@@ -13,6 +14,9 @@ import model.server.pdcs.contracts.TransportContract;
  * @author Ilya Ivanov
  */
 public class Collector<ST extends Storable & Transportable> implements Carrier<ST> {
+    /** log4j logger */
+    private static final Logger log = Logger.getLogger(Collector.class);
+
     /** place to completed orders accept from */
     private final CollectingArea<ST> collectingArea;
 
@@ -26,5 +30,6 @@ public class Collector<ST extends Storable & Transportable> implements Carrier<S
         synchronized (collectingArea) {
             collectingArea.collect();
         }
+        log.info("Production was collected");
     }
 }

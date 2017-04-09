@@ -1,18 +1,23 @@
 package model.client;
 
-import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 import model.Model;
 import model.cargo2.Cargo;
 import model.client.ship.Ship;
-import model.server.remote.ArrivalService;
+import model.server.interfaces.remote.ArrivalService;
+import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.apache.commons.configuration2.plist.ParseException;
 import org.apache.log4j.Logger;
+import properties.PropertiesLoader;
 
 import java.io.*;
-import java.net.Socket;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
-
-import static org.jscience.physics.amount.Constants.c;
+import java.util.LinkedHashMap;
+import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * @author Ilya Ivanov
@@ -24,29 +29,36 @@ public class Client implements Runnable {
     /** host to access to */
     private final String PORT_NAME;
 
-    /** wandering ship */
-    private final Ship ship;
+    /** thread pool of ships */
+    private final ExecutorService shipPool;
 
-    public Client(String portName) throws IOException, NotBoundException {
+    /** ships configuration */
+    private final LinkedHashMap<String, Configuration> configuration;
+
+    /** remote service */
+    private final ArrivalService<Cargo> service;
+
+    public Client(String portName) throws IOException, NotBoundException, ParseException, ConfigurationException {
         this.PORT_NAME = portName;
-        ArrivalService<Cargo> service = (ArrivalService<Cargo>) Naming.lookup(PORT_NAME);
+        service = (ArrivalService<Cargo>) Naming.lookup(PORT_NAME);
 
-        ship = new Ship("some ship", service);
+        configuration = PropertiesLoader.loadXMLConfiguration(new File(""), "name", "ship");
+        shipPool = Executors.newFixedThreadPool(configuration.size());
     }
 
     @Override
     public void run() {
-        // run in current thread
-        ship.run();
+        for (String name : configuration.keySet()) {
+//            shipPool.submit(new Ship(service, name));
+        }
     }
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) {
         Client client = null;
         try {
             client = new Client(Model.getInstance().getPortName());
-        } catch (IOException | NotBoundException e) {
-            // fail on start
-            // report bug
+        } catch (IOException | NotBoundException | ParseException | ConfigurationException e) {
+            log.fatal("Client failed of start!", e);
             e.printStackTrace();
             assert false : "Bug report: Client failed!";
         }

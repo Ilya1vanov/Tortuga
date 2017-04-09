@@ -10,14 +10,18 @@ import javax.measure.quantity.Volume;
 
 import java.io.Serializable;
 
-import static javax.measure.unit.SI.CUBIC_METRE;
-import static javax.measure.unit.SI.KILOGRAM;
+import static javax.measure.unit.SI.*;
+import static javax.measure.unit.NonSI.*;
 
 /**
  * @author Ilya Ivanov
  */
 public enum Cargo implements Producible, Transportable, Storable, Serializable {
-    GOLD("gold",  Amount.valueOf(200, CUBIC_METRE),  Amount.valueOf(20, KILOGRAM ));
+    GOLD("gold",  Amount.valueOf(622, CENTI(CUBIC_METRE)),  Amount.valueOf(12, KILOGRAM )),
+    COAL("coal", Amount.valueOf(20, CUBIC_METRE),  Amount.valueOf(27600, KILOGRAM )),
+    DRUGS("drugs", Amount.valueOf(20, CENTI(CUBIC_METRE)),  Amount.valueOf(700, GRAM )),
+    WOOD("wood", Amount.valueOf(30, CUBIC_METRE),  Amount.valueOf(27600, KILOGRAM )),
+    HERBS("herbs", Amount.valueOf(5, CUBIC_METRE),  Amount.valueOf(19800, KILOGRAM ));
 
     Cargo(String name, Amount<Volume> volume, Amount<Mass> mass) {
         this.name = name;

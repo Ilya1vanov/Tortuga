@@ -1,7 +1,6 @@
-package model.server.remote;
+package model.server.interfaces.remote;
 
-import model.client.rating.Stars;
-import model.client.ship.MaritimeCarrier;
+import model.client.interfaces.MaritimeCarrier;
 import model.server.interfaces.production.Storable;
 import model.server.interfaces.production.Transportable;
 import model.server.interfaces.targetareas.OrdersExchangeArea;
@@ -11,8 +10,8 @@ import java.rmi.RemoteException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Remote arrival interface.
- *
+ * Remote remote interface.
+ * @param <TS> {@link Transportable} and {@link Storable} production
  * @author Ilya Ivanov
  */
 public interface ArrivalService<TS extends Transportable & Storable> extends Remote {
@@ -24,12 +23,11 @@ public interface ArrivalService<TS extends Transportable & Storable> extends Rem
      * @param <S> sea transport
      * @return interface for handling goods
      */
-    <S extends MaritimeCarrier<TS>>
+    <S extends MaritimeCarrier<TS, ?>>
     OrdersExchangeArea<TS> moor(S carrier, long estimatedDuration, TimeUnit unit) throws RemoteException;
 
     /**
-     *
-     * @return
+     * Unmoor
      */
-    Stars unmoor() throws RemoteException;
+    void unmoor() throws RemoteException;
 }

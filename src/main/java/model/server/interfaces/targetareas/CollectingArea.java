@@ -1,8 +1,11 @@
 package model.server.interfaces.targetareas;
 
+import javafx.util.Pair;
+import model.cargo2.Cargo;
 import model.server.interfaces.production.Storable;
 import model.server.interfaces.production.Transportable;
 import model.server.pdcs.contracts.CommodityContract;
+import model.server.pdcs.contracts.TransportContract;
 
 import java.util.Collection;
 
@@ -20,7 +23,7 @@ public interface CollectingArea<TS extends Transportable & Storable> {
      * @return collection of orders
      * @see CommodityContract#isCompleted()
      */
-    Collection<TS> collect();
+    Collection<Pair<TransportContract, Collection<? extends TS>>> collect();
 
     /**
      * Ask area if it has unwanted completed orders to collect.

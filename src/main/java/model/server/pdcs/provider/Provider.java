@@ -34,14 +34,15 @@ public final class Provider<TS extends Transportable & Storable>
      * @param contract contract
      * @param products produced products
      */
-    public void deliver(TransportContract<Client, ? extends Carrier<TS>, TS> contract, Collection<? extends TS> products) {
+    public void deliver(TransportContract<Client, Carrier<TS>, TS> contract, Collection<? extends TS> products) {
         if (contract == null || products == null)
             throw new IllegalArgumentException("Null arguments passed: " + contract + products);
         try {
             supplyingArea.supply(contract, products);
         } catch (Exception e) {
-            log.fatal("Unbounded delivery area thrown exception", e);
+            log.warn("Unbounded delivery area thrown exception", e);
             assert false : "Unbounded delivery area thrown exception" ;
         }
+        log.info("Order was delivered");
     }
 }

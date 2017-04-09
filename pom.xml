@@ -8,7 +8,6 @@
     <artifactId>tortuga</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-
     <build>
         <pluginManagement>
             <plugins>
@@ -37,9 +36,7 @@
         </plugins>
     </build>
 
-
     <dependencies>
-
         <!--logger-->
         <dependency>
             <groupId>log4j</groupId>
@@ -106,6 +103,11 @@
             <artifactId>commons-beanutils</artifactId>
             <version>1.9.3</version>
         </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-ri</artifactId>
+            <version>2.2.11</version>
+        </dependency>
 
         <!--collections and file utilities-->
         <dependency>
@@ -114,13 +116,5 @@
             <version>r09</version>
         </dependency>
     </dependencies>
-
-    <!--reflection api-->
-    <dependency>
-        <groupId>org.reflections</groupId>
-        <artifactId>reflections</artifactId>
-        <version>0.9.9-RC1</version>
-    </dependency>
-
 
 </project>

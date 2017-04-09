@@ -4,6 +4,7 @@ import model.server.interfaces.parties.Carrier;
 import model.server.interfaces.production.Storable;
 import model.server.interfaces.production.Transportable;
 
+import java.io.Serializable;
 import java.rmi.Remote;
 
 /**
