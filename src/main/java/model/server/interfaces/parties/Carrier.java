@@ -13,10 +13,12 @@ import javax.measure.quantity.Volume;
  * @author Ilya Ivanov
  */
 public interface Carrier<T extends Transportable> extends Performer {
+    /** @return volume limit for transport */
     default Amount<Volume> getVolume() {
         throw new NotImplementedException();
     }
 
+    /** @return deadweight for transport */
     default Amount<Mass> getCarrying() {
         throw new NotImplementedException();
     }

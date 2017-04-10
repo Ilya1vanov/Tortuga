@@ -1,7 +1,6 @@
 package model.cargo2;
 
-import model.server.pdcs.factories.SingleFactory;
-import org.apache.log4j.Logger;
+import model.server.pdcsystem.factories.SingleFactory;
 
 /**
  * @author Ilya Ivanov

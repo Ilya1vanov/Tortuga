@@ -12,7 +12,7 @@ import model.server.interfaces.targetareas.CollectingArea;
 import model.server.interfaces.targetareas.OrdersExchangeArea;
 import model.server.interfaces.targetareas.SupplyingArea;
 import model.server.interfaces.targetareas.SupplyingCollectingArea;
-import model.server.pdcs.contracts.TransportContract;
+import model.server.pdcsystem.contracts.TransportContract;
 import org.apache.log4j.Logger;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -40,13 +40,11 @@ public class Port implements Runnable,
     /** name of this port */
     @XmlAttribute
     private String name;
-
 //    /** input products buffer */
 //    BlockingQueue<Cargo> productsInputBuf = new ArrayBlockingQueue<Cargo>(5, true);
 //
 //    /** output products buffer */
 //    BlockingQueue<Cargo> productsOutputBuf = new ArrayBlockingQueue<Cargo>(5, true);
-
     /** ships queue */
     private final PriorityBlockingQueue<MaritimeCarrier<Cargo, ?>> shipsQueue = new PriorityBlockingQueue<>();
 
@@ -151,20 +149,23 @@ public class Port implements Runnable,
     public void supply(TransportContract<Client, Carrier<Cargo>, Cargo> transportContract, Collection<? extends Cargo> products) {
         for (Pier pier : piers) {
             final Warehouse warehouse = pier.getWarehouse();
-            if (warehouse.isSupplyingRequired())
+            if (warehouse.isSupplyingRequired()) {
                 try {
                     warehouse.supply(transportContract, products);
                 } catch (CapacityViolationException e) {
                     continue;
                 }
                 break;
+            }
         }
     }
 
     @Override
     public String toString() {
-        return "Port{" +
-                "name='" + name + '\'' +
+        return "Port {" +
+                "name = '" + name + '\'' +
+                ", shipsQueue = " + shipsQueue +
+                ", piers = " + piers +
                 '}';
     }
 

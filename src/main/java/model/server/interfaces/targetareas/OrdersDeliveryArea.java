@@ -1,15 +1,14 @@
 package model.server.interfaces.targetareas;
 
 import model.server.exceptions.CapacityViolationException;
-import model.server.pdcs.contracts.CommodityContract;
-import model.server.pdcs.contracts.TransportContract;
+import model.server.pdcsystem.contracts.CommodityContract;
+import model.server.pdcsystem.contracts.TransportContract;
 import model.server.interfaces.parties.Carrier;
 import model.server.interfaces.parties.Client;
 import model.server.interfaces.production.Storable;
 import model.server.interfaces.production.Transportable;
 
 import java.io.Serializable;
-import java.rmi.RemoteException;
 import java.util.Collection;
 
 /**

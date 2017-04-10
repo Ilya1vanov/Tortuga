@@ -1,5 +1,6 @@
 package model.cargo2;
 
+import com.google.gson.annotations.Expose;
 import model.server.interfaces.production.Producible;
 import model.server.interfaces.production.Storable;
 import model.server.interfaces.production.Transportable;
@@ -30,6 +31,7 @@ public enum Cargo implements Producible, Transportable, Storable, Serializable {
     }
 
     /** cargo's name */
+    @Expose
     private final String name;
 
     /** cargo's volume */
@@ -38,25 +40,24 @@ public enum Cargo implements Producible, Transportable, Storable, Serializable {
     /** cargo's mass */
     private final Amount<Mass> mass;
 
-    /** @return cargo's name */
+    /**{@inheritDoc}
+     * @see Storable*/
+    @Override
     public String getName() {
         return name;
     }
 
-    /** @return cargo's volume */
+    /**{@inheritDoc}
+     * @see Storable*/
+    @Override
     public Amount<Volume> getVolume() {
         return volume;
     }
 
-    /** @return cargo's mass */
+    /**{@inheritDoc}
+     * @see Storable*/
+    @Override
     public Amount<Mass> getMass() {
-
         return mass;
     }
-
-
-
-//    static Cargo produce(String cargo) {
-//        return Cargo.valueOf(cargo);
-//    }
 }

@@ -87,7 +87,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!--properties-->
+        <!--properties, XML and JSON-->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-configuration2</artifactId>
@@ -108,6 +108,11 @@
             <artifactId>jaxb-ri</artifactId>
             <version>2.2.11</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.0</version>
+        </dependency>
 
         <!--collections and file utilities-->
         <dependency>
@@ -115,6 +120,8 @@
             <artifactId>guava</artifactId>
             <version>r09</version>
         </dependency>
+
+
     </dependencies>
 
 </project>

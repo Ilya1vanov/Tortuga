@@ -1,6 +1,6 @@
 package model.server.interfaces.parties;
 
-import model.server.pdcs.contracts.CommodityContract;
+import model.server.pdcsystem.contracts.CommodityContract;
 
 /**
  * Performer in {@link CommodityContract}

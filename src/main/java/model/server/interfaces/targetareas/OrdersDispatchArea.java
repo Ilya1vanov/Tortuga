@@ -1,8 +1,8 @@
 package model.server.interfaces.targetareas;
 
 import javafx.util.Pair;
-import model.server.pdcs.contracts.CommodityContract;
-import model.server.pdcs.contracts.TransportContract;
+import model.server.pdcsystem.contracts.CommodityContract;
+import model.server.pdcsystem.contracts.TransportContract;
 import model.server.interfaces.parties.Carrier;
 import model.server.interfaces.parties.Client;
 import model.server.interfaces.production.Storable;

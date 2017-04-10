@@ -1,9 +1,10 @@
 package model.server.portsystem;
 
+import gson.GSONExclude;
 import model.cargo2.Cargo;
-import model.client.logbook.Logbook;
-import model.client.rating.Rating;
-import model.client.rating.Stars;
+import model.client.ship.logbook.Logbook;
+import model.client.ship.rating.Rating;
+import model.client.ship.rating.Stars;
 import model.client.interfaces.MaritimeCarrier;
 import model.server.exceptions.PierIsNotFreeException;
 import model.server.interfaces.remote.ArrivalService;
@@ -35,6 +36,7 @@ public class Pier implements ArrivalService<Cargo> {
 
     /** port that owns this pier */
     @XmlTransient
+    @GSONExclude
     private Port port;
 
     /** owned warehouse */
@@ -45,12 +47,15 @@ public class Pier implements ArrivalService<Cargo> {
     private MaritimeCarrier<Cargo, ?> maritimeCarrier;
 
     /** park timer */
+    @GSONExclude
     private Timer timer = new Timer();
 
     /** stop watch to count mooring time exceeding */
+    @GSONExclude
     private StopWatch stopWatch = new StopWatch();
 
     /** task, that runs when estimated park duration was exceeded */
+    @GSONExclude
     private final TimerTask onTimeExceeded = new TimerTask() {
         @Override
         public void run() {
@@ -132,7 +137,16 @@ public class Pier implements ArrivalService<Cargo> {
         maritimeCarrier = null;
     }
 
-//    /**
+    @Override
+    public String toString() {
+        return "Pier {" +
+                "id = " + id +
+                ", warehouse =" + warehouse +
+                ", maritimeCarrier=" + (maritimeCarrier == null ? "free" : maritimeCarrier) +
+                '}';
+    }
+
+    //    /**
 //     * Constructs new pier.
 //     * @param port port, that owns this pier
 //     * @param capacityOfWarehouse capacity of owned warehouse

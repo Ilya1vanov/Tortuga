@@ -2,7 +2,7 @@ package model.server.interfaces.targetareas;
 
 import model.server.interfaces.production.Storable;
 import model.server.interfaces.production.Transportable;
-import model.server.pdcs.contracts.CommodityContract;
+import model.server.pdcsystem.contracts.CommodityContract;
 
 /**
  * Place where new (not {@link CommodityContract#isAccepted() isAccepted()}) orders are supplied,

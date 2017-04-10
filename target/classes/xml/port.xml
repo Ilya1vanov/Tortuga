@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<port name="Tortuga">
+    <pier>
+        <warehouse capacity="100"/>
+    </pier>
+    <pier>
+        <warehouse capacity="150"/>
+    </pier>
+</port>

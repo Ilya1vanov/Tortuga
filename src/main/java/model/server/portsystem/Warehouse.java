@@ -5,13 +5,14 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.util.Pair;
+import gson.GSONExclude;
 import model.cargo2.Cargo;
 import model.client.interfaces.MaritimeCarrier;
 import model.server.exceptions.CapacityViolationException;
 import model.server.interfaces.parties.Carrier;
 import model.server.interfaces.parties.Client;
 import model.server.interfaces.targetareas.*;
-import model.server.pdcs.contracts.TransportContract;
+import model.server.pdcsystem.contracts.TransportContract;
 import org.apache.log4j.Logger;
 import org.jscience.physics.amount.Amount;
 
@@ -36,10 +37,11 @@ public class Warehouse implements OrdersExchangeArea<Cargo>, SupplyingCollecting
     private int capacity;
 
     /** number of currently storing items */
-    private final IntegerProperty nowStore = new SimpleIntegerProperty(0);
+    private final IntegerProperty nowStore = new SimpleIntegerProperty(this, "nowStore",0);
 
     /** pier, that own this warehouse */
     @XmlTransient
+    @GSONExclude
     private Pier pier;
 
     /** list that contains new orders list &lt;order, collection of products&gt; */
@@ -175,7 +177,15 @@ public class Warehouse implements OrdersExchangeArea<Cargo>, SupplyingCollecting
         return newOrders.isEmpty();
     }
 
-
+    @Override
+    public String toString() {
+        return "Warehouse {" +
+                "capacity = " + capacity +
+                ", now storing = " + nowStore.get() +
+                ", number of new orders = " + newOrders.size() +
+                ", number of completed = " + completedOrders.size() +
+                '}';
+    }
 
     //    /**
 //     * @param capacity warehouse capacity

@@ -1,19 +1,21 @@
 package model.client.ship;
 
+import com.google.gson.annotations.Expose;
+import gson.GSONExclude;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableObjectValue;
 import javafx.util.Pair;
 import model.cargo2.Cargo;
 import model.client.interfaces.MaritimeCarrier;
-import model.client.logbook.Logbook;
-import model.client.rating.Rating;
+import model.client.ship.logbook.Logbook;
+import model.client.ship.rating.Rating;
 import model.server.interfaces.parties.Carrier;
 import model.server.interfaces.parties.Client;
 import model.server.interfaces.production.Transportable;
 import model.server.interfaces.remote.ArrivalService;
 import model.server.interfaces.targetareas.OrdersExchangeArea;
-import model.server.pdcs.contracts.TransportContract;
+import model.server.pdcsystem.contracts.TransportContract;
 import model.server.portsystem.Pier;
 import model.server.portsystem.Port;
 import org.apache.log4j.Logger;
@@ -53,33 +55,42 @@ public class Ship implements Runnable, MaritimeCarrier<Cargo, Ship> {
     private final String name;
 
     /** ship's displacement */
+    @GSONExclude
     private final Amount<Volume> displacement;
 
     /** ship's velocity */
+    @GSONExclude
     private final Amount<Velocity> velocity;
 
     /** ship's volume */
+    @GSONExclude
     private final Amount<Volume> volume;
 
     /** ship's carrying */
+    @GSONExclude
     private final Amount<Mass> carrying;
 
     /** rating of the ship */
     private final Rating rating = new Rating();
 
     /** contract */
+    @GSONExclude
     private TransportContract<Client, Carrier<Cargo>, Cargo> contract;
 
     /** transported goods. defaults to 50*/
+    @GSONExclude
     private final List<Cargo> goods = new ArrayList<>(50);
 
     /** remote interface */
+    @GSONExclude
     private final ArrivalService<Cargo> service;
 
     /** current ship status */
+    @GSONExclude
     private final ObjectProperty<ShipStatus> status = new SimpleObjectProperty<>();
 
     /** logbook */
+    @GSONExclude
     private final Logbook logbook = new Logbook();
 
     /**
@@ -87,16 +98,18 @@ public class Ship implements Runnable, MaritimeCarrier<Cargo, Ship> {
      * @param name {@code Ship} name
      */
     public Ship(ArrivalService service, String name, Amount<Volume> displacement, Amount<Velocity> velocity, Amount<Volume> volume, Amount<Mass> carrying) {
-        this.id = idCounter.incrementAndGet();
+        this.service = service;
         this.name = name;
         this.displacement = displacement;
         this.velocity = velocity;
         this.volume = volume;
         this.carrying = carrying;
-
-        this.status.set(ShipStatus.ON_WAY);
-        this.service = service;
         status.addListener(observable -> log.info(String.valueOf(id) + name + " status: " + status.get().getMessage()));
+    }
+
+    {
+        this.id = idCounter.incrementAndGet();
+        this.status.set(ShipStatus.ON_WAY);
     }
 
     /** {@inheritDoc}*/

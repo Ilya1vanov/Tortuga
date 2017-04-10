@@ -1,10 +1,7 @@
 package model.client.interfaces;
 
-import model.client.logbook.Logbook;
-import model.client.rating.Rating;
-import model.client.rating.Stars;
-
-import java.util.Collection;
+import model.client.ship.logbook.Logbook;
+import model.client.ship.rating.Rating;
 
 /**
  * @author Ilya Ivanov

@@ -6,6 +6,8 @@ import temps.TempDirectory;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 /**
  * MVC Model class.
@@ -32,6 +34,18 @@ public class Model {
     /** port name */
     private final String PORT_NAME = "Tortuga";
 
+    /** daemon thread factory */
+    private final DaemonThreadFactory factory = new DaemonThreadFactory();
+
+    private final class DaemonThreadFactory implements ThreadFactory {
+        @Override
+        public Thread newThread(Runnable r) {
+            final Thread thread = Executors.defaultThreadFactory().newThread(r);
+            thread.setDaemon(true);
+            return thread;
+        }
+    }
+
     public File getLogSessionDir() {
         try {
             return logSessionDir.getTempDir(LOGS_PATH);
@@ -43,5 +57,10 @@ public class Model {
 
     public String getPortName() {
         return PORT_NAME;
+    }
+
+    /** @return daemon thread factory */
+    public ThreadFactory getDaemonThreadFactory() {
+        return factory;
     }
 }
