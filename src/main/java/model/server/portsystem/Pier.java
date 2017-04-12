@@ -40,11 +40,14 @@ public class Pier implements ArrivalService<Cargo> {
     private Port port;
 
     /** owned warehouse */
-    @XmlElement
+    @XmlElement(required = true)
     private Warehouse warehouse;
 
     /** currently moored maritimeCarrier */
     private MaritimeCarrier<Cargo, ?> maritimeCarrier;
+
+    /** id of thread, that process this mooring */
+    Long serviceThreadID;
 
     /** park timer */
     @GSONExclude
@@ -62,6 +65,19 @@ public class Pier implements ArrivalService<Cargo> {
             stopWatch.start();
         }
     };
+
+    /** default constructor for JAXB */
+    public Pier() {}
+
+    /**
+     * Constructs new pier.
+     * @param port port, that owns this pier
+     * @param capacityOfWarehouse capacity of owned warehouse
+     */
+    public Pier(Port port, int capacityOfWarehouse) {
+        this.port = port;
+        this.warehouse = new Warehouse(capacityOfWarehouse, this);
+    }
 
     /** correct defining id */
     {
@@ -83,6 +99,12 @@ public class Pier implements ArrivalService<Cargo> {
         return maritimeCarrier;
     }
 
+
+    /** @return id of thread, that process current mooring; null if {@code this.isFree == true} */
+    public long getServiceThreadID() {
+        return serviceThreadID;
+    }
+
     /** @return true if pier is able to accept mooring */
     public boolean isFree(){
         return maritimeCarrier == null;
@@ -98,6 +120,7 @@ public class Pier implements ArrivalService<Cargo> {
         if (maritimeCarrier != null)
             throw new PierIsNotFreeException(id + " pier is not free");
         maritimeCarrier = carrier;
+        serviceThreadID = Thread.currentThread().getId();
         timer.schedule(onTimeExceeded, TimeUnit.MILLISECONDS.convert(estimatedDuration, unit));
         return warehouse;
     }
@@ -135,6 +158,7 @@ public class Pier implements ArrivalService<Cargo> {
         stopWatch.reset();
         timer.purge();
         maritimeCarrier = null;
+        serviceThreadID = null;
     }
 
     @Override
@@ -145,15 +169,4 @@ public class Pier implements ArrivalService<Cargo> {
                 ", maritimeCarrier=" + (maritimeCarrier == null ? "free" : maritimeCarrier) +
                 '}';
     }
-
-    //    /**
-//     * Constructs new pier.
-//     * @param port port, that owns this pier
-//     * @param capacityOfWarehouse capacity of owned warehouse
-//     */
-//    public Pier(Port port, int capacityOfWarehouse) {
-//        this.port = port;
-//        this.warehouse = new Warehouse(capacityOfWarehouse, this);
-//        this.id = idCounter.incrementAndGet();
-//    }
 }

@@ -5,6 +5,7 @@ import model.cargo2.Cargo;
 import model.client.interfaces.MaritimeCarrier;
 import model.client.ship.Ship;
 import model.server.exceptions.CapacityViolationException;
+import model.server.exceptions.NotInServiceException;
 import model.server.interfaces.remote.ArrivalService;
 import model.server.interfaces.parties.Carrier;
 import model.server.interfaces.parties.Client;
@@ -18,12 +19,14 @@ import org.apache.log4j.Logger;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 /**
  * Port has a several {@link Pier Piers} and {@link Warehouse Stocks}. Able to moor
@@ -48,8 +51,19 @@ public class Port implements Runnable,
     /** ships queue */
     private final PriorityBlockingQueue<MaritimeCarrier<Cargo, ?>> shipsQueue = new PriorityBlockingQueue<>();
 
+    /** default constructor for JAXB */
+    public Port() {}
+
+    /** for manual instantiation */
+    public Port(String name, Pier first, Pier... piers) throws RemoteException {
+        this.name = name;
+        this.piers.add(first);
+        for (Pier pier : piers)
+            this.piers.add(pier);
+    }
+
     /** list of {@link Pier Piers} of this {@code Port} */
-    @XmlElement(name="pier")
+    @XmlElement(name="pier", required = true)
     private List<Pier> piers = new ArrayList<>();
 
     /** @return name of this port */
@@ -105,8 +119,16 @@ public class Port implements Runnable,
      * @see ArrivalService#unmoor
      */
     @Override
-    public void unmoor() {
+    public void unmoor() throws NotInServiceException {
         synchronized (shipsQueue) {
+            final Stream<Pier> pierStream = piers.stream().filter(pier -> pier.getServiceThreadID() == Thread.currentThread().getId());
+            if (pierStream.count() == 0)
+                throw new NotInServiceException("Your carrier was not in service. Moor first.");
+            if (pierStream.count() > 1) {
+                log.fatal("More than one threads where created on one connection");
+                throw new RuntimeException("More than one threads where created on one connection");
+            }
+            pierStream.findFirst().get().unmoor();
             shipsQueue.notifyAll();
         }
     }
@@ -168,11 +190,4 @@ public class Port implements Runnable,
                 ", piers = " + piers +
                 '}';
     }
-
-    //    public Port(String name, Pier first, Pier... piers) throws RemoteException {
-//    this.name = name;
-//        this.piers.add(first);
-//        for (Pier pier : piers)
-//            this.piers.add(pier);
-//    }
 }

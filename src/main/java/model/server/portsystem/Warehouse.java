@@ -1,5 +1,6 @@
 package model.server.portsystem;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
@@ -33,7 +34,7 @@ public class Warehouse implements OrdersExchangeArea<Cargo>, SupplyingCollecting
     private static final Logger log = Logger.getLogger(Warehouse.class);
 
     /** total capacity */
-    @XmlAttribute
+    @XmlAttribute(required = true)
     private int capacity;
 
     /** number of currently storing items */
@@ -44,6 +45,7 @@ public class Warehouse implements OrdersExchangeArea<Cargo>, SupplyingCollecting
     @GSONExclude
     private Pier pier;
 
+
     /** list that contains new orders list &lt;order, collection of products&gt; */
     private final ObservableList<Pair<TransportContract<Client, Carrier<Cargo>, Cargo>, Collection<? extends Cargo>>> newOrders
             = FXCollections.observableArrayList();
@@ -51,6 +53,22 @@ public class Warehouse implements OrdersExchangeArea<Cargo>, SupplyingCollecting
     /** list that contains completed orders list &lt;order, collection of products&gt;  */
     private final ObservableList<Pair<TransportContract<Client, Carrier<Cargo>, Cargo>, Collection<? extends Cargo>>> completedOrders
             = FXCollections.observableArrayList();
+
+    /** default constructor for JAXB */
+    public Warehouse() {}
+
+    /**
+     * @param capacity warehouse capacity
+     * @param pier pier, that own this warehouse
+     */
+    public Warehouse(int capacity, Pier pier) {
+        this.capacity = capacity;
+        this.pier = pier;
+    }
+
+    {
+        nowStore.bind(Bindings.size(completedOrders).add(Bindings.size(newOrders)));
+    }
 
     /** Sets up the parent pointer correctly */
     public void afterUnmarshal(Unmarshaller u, Object parent) {
@@ -186,14 +204,4 @@ public class Warehouse implements OrdersExchangeArea<Cargo>, SupplyingCollecting
                 ", number of completed = " + completedOrders.size() +
                 '}';
     }
-
-    //    /**
-//     * @param capacity warehouse capacity
-//     * @param pier pier, that own this warehouse
-//     */
-//    public Warehouse(int capacity, Pier pier) {
-//        nowStore.bind(Bindings.size(completedOrders).add(Bindings.size(newOrders)));
-//        this.capacity = capacity;
-//        this.pier = pier;
-//    }
 }

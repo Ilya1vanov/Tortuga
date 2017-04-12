@@ -20,10 +20,14 @@ import model.server.portsystem.Pier;
 import model.server.portsystem.Port;
 import org.apache.log4j.Logger;
 import org.jscience.physics.amount.Amount;
+import org.jscience.physics.amount.AmountFormat;
 
 import javax.measure.quantity.Mass;
 import javax.measure.quantity.Velocity;
 import javax.measure.quantity.Volume;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -52,23 +56,24 @@ public class Ship implements Runnable, MaritimeCarrier<Cargo, Ship> {
     private final int id;
 
     /** name of the ship */
-    private final String name;
+    @XmlAttribute
+    private  String name;
 
     /** ship's displacement */
     @GSONExclude
-    private final Amount<Volume> displacement;
+    private Amount<Volume> displacement;
 
     /** ship's velocity */
     @GSONExclude
-    private final Amount<Velocity> velocity;
+    private Amount<Velocity> velocity;
 
     /** ship's volume */
     @GSONExclude
-    private final Amount<Volume> volume;
+    private Amount<Volume> volume;
 
     /** ship's carrying */
     @GSONExclude
-    private final Amount<Mass> carrying;
+    private Amount<Mass> carrying;
 
     /** rating of the ship */
     private final Rating rating = new Rating();
@@ -83,7 +88,7 @@ public class Ship implements Runnable, MaritimeCarrier<Cargo, Ship> {
 
     /** remote interface */
     @GSONExclude
-    private final ArrivalService<Cargo> service;
+    private ArrivalService<Cargo> service;
 
     /** current ship status */
     @GSONExclude
@@ -93,7 +98,11 @@ public class Ship implements Runnable, MaritimeCarrier<Cargo, Ship> {
     @GSONExclude
     private final Logbook logbook = new Logbook();
 
+    /** Set up client settings */
+    public Ship() {}
+
     /**
+     * Manual constructor.
      * @param service arrival service
      * @param name {@code Ship} name
      */
@@ -104,11 +113,20 @@ public class Ship implements Runnable, MaritimeCarrier<Cargo, Ship> {
         this.velocity = velocity;
         this.volume = volume;
         this.carrying = carrying;
-        status.addListener(observable -> log.info(String.valueOf(id) + name + " status: " + status.get().getMessage()));
+        tuneListeners();
+    }
+
+    /** Set up ship settings */
+    public void afterUnmarshal(Unmarshaller u, Object parent) {
+        tuneListeners();
     }
 
     {
         this.id = idCounter.incrementAndGet();
+    }
+
+    private void tuneListeners() {
+        status.addListener(observable -> log.info(String.valueOf(id) + " - " +  name + " status: " + status.get().getMessage()));
         this.status.set(ShipStatus.ON_WAY);
     }
 
@@ -142,6 +160,31 @@ public class Ship implements Runnable, MaritimeCarrier<Cargo, Ship> {
     @Override
     public Amount<Mass> getCarrying() {
         return carrying;
+    }
+
+    /** @param service arrival service */
+    public void setService(ArrivalService<Cargo> service) {
+        this.service = service;
+    }
+
+    @XmlElement(name = "displacement", required = true)
+    private void setDisplacement_(String displacement) {
+        this.displacement = (Amount<Volume>) Amount.valueOf(displacement);
+    }
+
+    @XmlElement(name = "velocity", required = true)
+    private void setVelocity_(String velocity) {
+        this.velocity = (Amount<Velocity>) Amount.valueOf(velocity);
+    }
+
+    @XmlElement(name = "volume", required = true)
+    private void setVolume_(String v) {
+        this.volume = (Amount<Volume>) Amount.valueOf(v);
+    }
+
+    @XmlElement(name = "carrying", required = true)
+    private void setCarrying_(String carrying) {
+        this.carrying = (Amount<Mass>) Amount.valueOf(carrying);
     }
 
     @Override

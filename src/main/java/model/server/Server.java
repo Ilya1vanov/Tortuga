@@ -19,8 +19,10 @@ import org.jscience.physics.amount.Amount;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -35,6 +37,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author Ilya Ivanov
  */
+@XmlRootElement
 public class Server implements Runnable {
     /** log4j logger */
     private static final Logger log = Logger.getLogger(Server.class);
@@ -46,6 +49,7 @@ public class Server implements Runnable {
     private PDCSystem pdcSystem;
 
     /** sea port */
+    @XmlElement
     private Port port;
 
     /** thread factory for background tasks */
@@ -54,43 +58,67 @@ public class Server implements Runnable {
     /** scheduled background tasks executor */
     private final ScheduledExecutorService Background = Executors.newSingleThreadScheduledExecutor(daemonFactory);
 
+    /** delay before start background tasks */
+    @XmlAttribute
+    private long backgroundStartDelay = 100;
+
+    /** background tasks period */
+    @XmlAttribute(required = true)
+    private long backgroundTasksPeriod = 5000;
+
+    /** number of port, where registry was created */
+    @XmlAttribute(required = true)
+    private int portNumber;
+
     /** RMI port name */
-    private final String portName;
+    @XmlAttribute(required = true)
+    private String portName;
 
     /** RMI registry */
-    private final Registry registry;
+    private Registry registry;
+
+    /** default constructor for JAXB */
+    public Server() {}
 
     /**
      * @param portName number of port to listen to
-     * @throws IOException if an socket I/O error occur
+     * @param backgroundTasksPeriod period with which tasks will be performed
+     * @param portNumber number of remote port
      */
-    public Server(String portName) throws IOException, JAXBException {
+    public Server(String portName, long backgroundTasksPeriod, long backgroundStartDelay, int portNumber) throws IllegalArgumentException {
+        if (portNumber < 0 || backgroundTasksPeriod <= 0 || portName == null || portName.isEmpty() || backgroundStartDelay < 0) {
+            log.fatal("Server failed on start!");
+            throw new IllegalArgumentException("Wrong arguments passed in constructor of Server");
+        }
         this.portName = portName;
-        // create JAXB context and initializing Marshaller
-        JAXBContext jaxbContext = JAXBContext.newInstance(Port.class);
-        Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+        this.backgroundTasksPeriod = backgroundTasksPeriod;
+        this.backgroundStartDelay = backgroundStartDelay;
+        this.portNumber = portNumber;
+    }
 
-        // specify the location and name of xml file to be read
-        File XMLFile = new File("./src/main/resources/xml/port.xml");
-
-        // this will create Java object - port from the XML file
-        port = (Port) jaxbUnmarshaller.unmarshal(XMLFile);
-
-        pdcSystem = new CargoPDCSystem(port, port);
+    {
         // log RMI-events
         System.setProperty("java.rmi.server.logCalls", "true");
         System.setProperty("sun.rmi.server.logLevel", "VERBOSE");
+    }
 
-        // export remote interface to RMI-registry
+    /**
+     * Export port to the remote server
+     * @throws RemoteException if some remote exceptions occurred
+     */
+    private void exportRemote() throws RemoteException {
+        // exportRemote remote interface to RMI-registry
         ArrivalService stub = (ArrivalService) UnicastRemoteObject.exportObject(port, 0);
-        registry = LocateRegistry.createRegistry(2002);
+        registry = LocateRegistry.createRegistry(portNumber);
         registry.rebind(portName, stub);
+
+        pdcSystem = new CargoPDCSystem(port, port);
     }
 
     @Override
     public void run() {
         // run delivery system
-        Background.scheduleAtFixedRate(pdcSystem, 100, 5000, TimeUnit.MILLISECONDS);
+        Background.scheduleAtFixedRate(pdcSystem, 100, backgroundTasksPeriod, TimeUnit.MILLISECONDS);
         log.info("PDCSystem was started\n");
         // 5 sec period port logger
         final Gson gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
@@ -108,10 +136,10 @@ public class Server implements Runnable {
                 .registerTypeAdapter(IntegerProperty.class, new NumberPropertiesSerializer())
                 .registerTypeAdapter(Amount.class, new AmountSerializer())
                 .setPrettyPrinting().serializeNulls().create();
-        Background.scheduleAtFixedRate(() -> portLog.info(gson.toJson(port)), 2600, 5000, TimeUnit.MILLISECONDS);
+        Background.scheduleAtFixedRate(() -> portLog.info(gson.toJson(port)), 100 + backgroundTasksPeriod / 2, backgroundTasksPeriod, TimeUnit.MILLISECONDS);
         // run port in the current thread
         port.run();
-        log.info("Port was started");
+        log.info("Port was launched");
     }
 
     /** Shutdown server. */
@@ -128,11 +156,19 @@ public class Server implements Runnable {
     public static void main(String[] args) {
         Server server = null;
         try {
-            server = new Server(Model.getInstance().getPortName());
-        } catch (IOException | JAXBException e) {
-            log.fatal("Server failed on start!", e);
+            // create JAXB context and initializing Marshaller
+            JAXBContext jaxbContext = JAXBContext.newInstance(Server.class);
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+
+            // specify the location and name of xml file to be read
+            File XMLFile = new File("./src/main/resources/xml/server.xml");
+
+            // this will create Java object - port from the XML file
+            server = (Server) jaxbUnmarshaller.unmarshal(XMLFile);
+            server.exportRemote();
+        } catch (JAXBException | RemoteException e) {
+            log.fatal("Unable to instantiate server", e);
             e.printStackTrace();
-            assert false : "Bug report: Server failed!";
         }
         // run server in the current thread
         server.run();
