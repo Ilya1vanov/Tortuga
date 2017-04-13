@@ -6,7 +6,6 @@ import model.client.ship.logbook.Logbook;
 import model.client.ship.rating.Rating;
 import model.client.ship.rating.Stars;
 import model.client.interfaces.MaritimeCarrier;
-import model.server.exceptions.PierIsNotFreeException;
 import model.server.interfaces.remote.ArrivalService;
 import model.server.interfaces.targetareas.OrdersExchangeArea;
 import org.apache.commons.lang3.time.StopWatch;
@@ -15,6 +14,8 @@ import org.apache.log4j.Logger;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -47,6 +48,7 @@ public class Pier implements ArrivalService<Cargo> {
     private MaritimeCarrier<Cargo, ?> maritimeCarrier;
 
     /** id of thread, that process this mooring */
+    @GSONExclude
     Long serviceThreadID;
 
     /** park timer */
@@ -89,36 +91,38 @@ public class Pier implements ArrivalService<Cargo> {
         this.port = (Port)parent;
     }
 
+    void exportRemote() throws RemoteException {
+        UnicastRemoteObject.exportObject(warehouse, 0);
+    }
+
     /** @return owned {@link Warehouse} */
-    public Warehouse getWarehouse() {
+    Warehouse getWarehouse() {
         return warehouse;
     }
 
     /** @return currently moored maritimeCarrier */
-    public MaritimeCarrier<Cargo, ?> getMaritimeCarrier() {
+    MaritimeCarrier<Cargo, ?> getMaritimeCarrier() {
         return maritimeCarrier;
     }
 
-
     /** @return id of thread, that process current mooring; null if {@code this.isFree == true} */
-    public long getServiceThreadID() {
+    long getServiceThreadID() {
         return serviceThreadID;
     }
 
     /** @return true if pier is able to accept mooring */
-    public boolean isFree(){
+    boolean isFree(){
         return maritimeCarrier == null;
     }
 
     /**
      * {@inheritDoc}
-     * @throws PierIsNotFreeException on attempt to moor, when previous didn't unmoor
      * @see ArrivalService#moor(MaritimeCarrier, long, TimeUnit)
      */
     @Override
     public <S extends MaritimeCarrier<Cargo, ?>> OrdersExchangeArea<Cargo> moor(S carrier, long estimatedDuration, TimeUnit unit) {
-        if (maritimeCarrier != null)
-            throw new PierIsNotFreeException(id + " pier is not free");
+        assert maritimeCarrier != null : "Concurrency bug: " + id + " pier is not free";
+
         maritimeCarrier = carrier;
         serviceThreadID = Thread.currentThread().getId();
         timer.schedule(onTimeExceeded, TimeUnit.MILLISECONDS.convert(estimatedDuration, unit));
@@ -130,7 +134,7 @@ public class Pier implements ArrivalService<Cargo> {
      * @see ArrivalService#unmoor
      */
     @Override
-    public void unmoor() {
+    public void unmoor() throws RemoteException {
         timer.cancel();
         long delay;
         if (stopWatch.isStarted()) {

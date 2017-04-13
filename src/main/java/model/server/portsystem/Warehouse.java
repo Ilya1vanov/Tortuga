@@ -23,13 +23,14 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
+import java.rmi.RemoteException;
 import java.util.*;
 
 /**
  * Store {@link Cargo Storable}.
  * @author Ilya Ivanov
  */
-public class Warehouse implements OrdersExchangeArea<Cargo>, SupplyingCollectingArea<Cargo>, Serializable {
+public class Warehouse implements OrdersExchangeArea<Cargo>, SupplyingCollectingArea<Cargo> {
     /** log4j logger */
     private static final Logger log = Logger.getLogger(Warehouse.class);
 
@@ -61,13 +62,16 @@ public class Warehouse implements OrdersExchangeArea<Cargo>, SupplyingCollecting
      * @param capacity warehouse capacity
      * @param pier pier, that own this warehouse
      */
-    public Warehouse(int capacity, Pier pier) {
+    Warehouse(int capacity, Pier pier) {
         this.capacity = capacity;
         this.pier = pier;
     }
 
     {
-        nowStore.bind(Bindings.size(completedOrders).add(Bindings.size(newOrders)));
+        nowStore.bind(
+                Bindings.createIntegerBinding(() ->  newOrders.stream().mapToInt(pair -> pair.getKey().getTotalItems()).sum(), Bindings.size(newOrders))
+                .add(Bindings.createIntegerBinding(() -> completedOrders.stream().mapToInt(pair -> pair.getValue().size()).sum(), Bindings.size(completedOrders)))
+        );
     }
 
     /** Sets up the parent pointer correctly */
@@ -101,7 +105,7 @@ public class Warehouse implements OrdersExchangeArea<Cargo>, SupplyingCollecting
      * @see OrdersDispatchArea
      */
     @Override
-    public Pair<TransportContract<Client, Carrier<Cargo>, Cargo>, Collection<? extends Cargo>> takeOrder() {
+    public Pair<TransportContract<Client, Carrier<Cargo>, Cargo>, Collection<? extends Cargo>> takeOrder() throws RemoteException {
         synchronized(newOrders) {
             Pair<TransportContract<Client, Carrier<Cargo>, Cargo>, Collection<? extends Cargo>> suitable = getSuitableOrder();
 
@@ -124,7 +128,7 @@ public class Warehouse implements OrdersExchangeArea<Cargo>, SupplyingCollecting
      * Find suitable, to the currently moored carrier, order, if present.
      * @return suitable, to the currently moored carrier, order; null if no suitable
      */
-    private Pair<TransportContract<Client, Carrier<Cargo>, Cargo>, Collection<? extends Cargo>> getSuitableOrder() {
+    private Pair<TransportContract<Client, Carrier<Cargo>, Cargo>, Collection<? extends Cargo>> getSuitableOrder() throws RemoteException {
         final MaritimeCarrier<Cargo, ?> maritimeCarrier = pier.getMaritimeCarrier();
         final Amount<Mass> carrying = maritimeCarrier.getCarrying();
         final Amount<Volume> volume = maritimeCarrier.getVolume();

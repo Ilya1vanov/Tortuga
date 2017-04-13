@@ -1,6 +1,7 @@
 package model.server.interfaces.remote;
 
 import model.client.interfaces.MaritimeCarrier;
+import model.client.ship.rating.Stars;
 import model.server.interfaces.production.Storable;
 import model.server.interfaces.production.Transportable;
 import model.server.interfaces.targetareas.OrdersExchangeArea;

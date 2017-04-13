@@ -117,9 +117,6 @@ public class Server implements Runnable {
 
     @Override
     public void run() {
-        // run delivery system
-        Background.scheduleAtFixedRate(pdcSystem, 100, backgroundTasksPeriod, TimeUnit.MILLISECONDS);
-        log.info("PDCSystem was started\n");
         // 5 sec period port logger
         final Gson gson = new GsonBuilder().setExclusionStrategies(new ExclusionStrategy() {
             @Override
@@ -136,7 +133,12 @@ public class Server implements Runnable {
                 .registerTypeAdapter(IntegerProperty.class, new NumberPropertiesSerializer())
                 .registerTypeAdapter(Amount.class, new AmountSerializer())
                 .setPrettyPrinting().serializeNulls().create();
-        Background.scheduleAtFixedRate(() -> portLog.info(gson.toJson(port)), 100 + backgroundTasksPeriod / 2, backgroundTasksPeriod, TimeUnit.MILLISECONDS);
+        Background.scheduleAtFixedRate(() -> portLog.warn(gson.toJson(port)), backgroundStartDelay, backgroundTasksPeriod, TimeUnit.MILLISECONDS);
+
+        // run delivery system
+        Background.scheduleAtFixedRate(pdcSystem, backgroundStartDelay + backgroundTasksPeriod / 2, backgroundTasksPeriod, TimeUnit.MILLISECONDS);
+        log.info("PDCSystem was started\n");
+
         // run port in the current thread
         port.run();
         log.info("Port was launched");
@@ -151,6 +153,8 @@ public class Server implements Runnable {
         UnicastRemoteObject.unexportObject(port, true);
 
         Background.shutdown();
+
+        log.info("Server successfully shut down");
     }
 
     public static void main(String[] args) {

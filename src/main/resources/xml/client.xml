@@ -7,22 +7,22 @@
         <velocity>20 m/s</velocity>
         <carrying>200 t</carrying>
     </ship>
-    <ship name="b">
-        <displacement>50 t</displacement>
-        <velocity>15 m/s</velocity>
-        <volume>10 m³</volume>
-        <carrying>2 t</carrying>
-    </ship>
-    <ship name="c">
-        <displacement>70 t</displacement>
-        <velocity>30 m/s</velocity>
-        <volume>20 m³</volume>
-        <carrying>3 t</carrying>
-    </ship>
-    <ship name="d">
-        <displacement>15 t</displacement>
-        <velocity>25 m/s</velocity>
-        <volume>30 m³</volume>
-        <carrying>4 t</carrying>
-    </ship>
+    <!--<ship name="b">-->
+        <!--<displacement>50 t</displacement>-->
+        <!--<velocity>15 m/s</velocity>-->
+        <!--<volume>10 m³</volume>-->
+        <!--<carrying>2 t</carrying>-->
+    <!--</ship>-->
+    <!--<ship name="c">-->
+        <!--<displacement>70 t</displacement>-->
+        <!--<velocity>30 m/s</velocity>-->
+        <!--<volume>20 m³</volume>-->
+        <!--<carrying>3 t</carrying>-->
+    <!--</ship>-->
+    <!--<ship name="d">-->
+        <!--<displacement>15 t</displacement>-->
+        <!--<velocity>25 m/s</velocity>-->
+        <!--<volume>30 m³</volume>-->
+        <!--<carrying>4 t</carrying>-->
+    <!--</ship>-->
 </client>

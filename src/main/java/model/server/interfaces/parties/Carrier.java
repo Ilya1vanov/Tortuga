@@ -6,6 +6,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.measure.quantity.Mass;
 import javax.measure.quantity.Volume;
+import java.rmi.RemoteException;
 
 /**
  * Class that is able to carry {@link Transportable}.
@@ -14,12 +15,12 @@ import javax.measure.quantity.Volume;
  */
 public interface Carrier<T extends Transportable> extends Performer {
     /** @return volume limit for transport */
-    default Amount<Volume> getVolume() {
+    default Amount<Volume> getVolume() throws RemoteException {
         throw new NotImplementedException();
     }
 
     /** @return deadweight for transport */
-    default Amount<Mass> getCarrying() {
+    default Amount<Mass> getCarrying() throws RemoteException {
         throw new NotImplementedException();
     }
 }

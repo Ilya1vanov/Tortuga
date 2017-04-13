@@ -20,6 +20,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,6 +43,9 @@ public class Client implements Runnable {
     @XmlElement(name="ship", required = true)
     private List<Ship> ships = new ArrayList<>();
 
+    /** imported services */
+    private List<ArrivalService<Cargo>> services = new ArrayList<>();
+
     /** thread pool of ships */
     private ExecutorService shipPool;
 
@@ -60,10 +64,12 @@ public class Client implements Runnable {
      * @param portName name of the port
      * @throws IllegalArgumentException if portName is null or empty string
      */
-    public Client(String portName) {
-        if (portName == null || portName.isEmpty())
+    public Client(String portName, List<Ship> ships) {
+        if (portName == null || portName.isEmpty() || ships == null || ships.isEmpty())
             throw new IllegalArgumentException("Illegal arguments passed in Client constructor");
         this.portName = portName;
+        this.ships = ships;
+        shipPool = Executors.newFixedThreadPool(ships.size());
     }
 
     {
@@ -75,20 +81,21 @@ public class Client implements Runnable {
     /** Set up client settings */
     public void afterUnmarshal(Unmarshaller u, Object parent) {
         try {
-            importRemote();
-        } catch (RemoteException | NotBoundException | MalformedURLException e) {
+            registry = LocateRegistry.getRegistry(portNumber);
+        } catch (RemoteException e) {
             log.fatal("Client failed on start!", e);
             throw new RuntimeException("Client failed on start", e);
         }
+        shipPool = Executors.newFixedThreadPool(ships.size());
     }
 
     /** Import remote interface. */
     private ArrivalService<Cargo> importRemote() throws RemoteException, NotBoundException, MalformedURLException {
-        registry = LocateRegistry.getRegistry( portNumber);
+        return (ArrivalService<Cargo>) registry.lookup(portName);
+    }
 
-        ArrivalService<Cargo> service = (ArrivalService<Cargo>) registry.lookup(portName);
-        shipPool = Executors.newFixedThreadPool(ships.size());
-        return service;
+    private void exportRemote(Ship ship) throws RemoteException {
+        UnicastRemoteObject.exportObject(ship, 0);
     }
 
     @Override
@@ -98,12 +105,21 @@ public class Client implements Runnable {
             try {
                 service = importRemote();
                 ship.setService(service);
+                exportRemote(ship);
                 shipPool.submit(ship);
             } catch (RemoteException | NotBoundException | MalformedURLException e) {
                 log.fatal("Client server failed while starting", e);
                 throw new RuntimeException("Client server failed while starting", e);
             }
         }
+        log.info("Ship threads was launched");
+    }
+
+    /** graceful shutdown client side */
+    public void shutdown() {
+        shipPool.shutdown();
+
+        log.info("Client successfully shut down");
     }
 
     public static void main(String[] args) {

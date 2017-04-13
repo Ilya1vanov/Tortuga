@@ -5,6 +5,7 @@ import com.google.gson.annotations.Expose;
 import org.apache.log4j.Logger;
 
 import java.io.Serializable;
+import java.rmi.Remote;
 
 /**
  * <p>Class that represents {@code rating} of the {@link model.client.ship.Ship Ship}. rating measures
@@ -15,7 +16,7 @@ import java.io.Serializable;
  * {@code rate1.compareTo(rate2) < 0} is true.</p>
  * @author Ilya Ivanov
  */
-public class Rating implements Comparable<Rating>, Serializable {
+public class Rating implements Comparable<Rating> {
     /* log4j logger */
     private static final Logger log = Logger.getLogger(Rating.class);
 

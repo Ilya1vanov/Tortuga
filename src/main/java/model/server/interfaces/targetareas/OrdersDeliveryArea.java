@@ -9,6 +9,7 @@ import model.server.interfaces.production.Storable;
 import model.server.interfaces.production.Transportable;
 
 import java.io.Serializable;
+import java.rmi.RemoteException;
 import java.util.Collection;
 
 /**
@@ -29,5 +30,5 @@ public interface OrdersDeliveryArea<TS extends Transportable & Storable> extends
      * @see CommodityContract#isCompleted()
      */
     void putOrder(TransportContract<Client, Carrier<TS>, TS> transportContract, Collection<? extends TS> products)
-            throws CapacityViolationException;
+            throws RemoteException, CapacityViolationException;
 }

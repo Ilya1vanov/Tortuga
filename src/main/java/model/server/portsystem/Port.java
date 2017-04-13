@@ -16,6 +16,7 @@ import model.server.interfaces.targetareas.SupplyingCollectingArea;
 import model.server.pdcsystem.contracts.TransportContract;
 import org.apache.log4j.Logger;
 
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -51,6 +52,10 @@ public class Port implements Runnable,
     /** ships queue */
     private final PriorityBlockingQueue<MaritimeCarrier<Cargo, ?>> shipsQueue = new PriorityBlockingQueue<>();
 
+    /** list of {@link Pier Piers} of this {@code Port} */
+    @XmlElement(name="pier", required = true)
+    private List<Pier> piers = new ArrayList<>();
+
     /** default constructor for JAXB */
     public Port() {}
 
@@ -62,9 +67,20 @@ public class Port implements Runnable,
             this.piers.add(pier);
     }
 
-    /** list of {@link Pier Piers} of this {@code Port} */
-    @XmlElement(name="pier", required = true)
-    private List<Pier> piers = new ArrayList<>();
+    {
+        shipsQueue.comparator();
+    }
+
+    /** Sets up the parent pointer correctly */
+    public void afterUnmarshal(Unmarshaller u, Object parent) {
+        for (Pier pier : piers)
+            try {
+                pier.exportRemote();
+            } catch (RemoteException e) {
+                log.fatal("Port failed while exporting remotes", e);
+                throw new RuntimeException("Port failed while exporting remotes", e);
+            }
+    }
 
     /** @return name of this port */
     public String getName() {
@@ -86,7 +102,7 @@ public class Port implements Runnable,
         synchronized (shipsQueue) {
             Pier freePier = getFreePier();
             // add carrier to the queue
-            shipsQueue.add(carrier);
+            shipsQueue.put(carrier);
             while(  // no free pier
                     freePier == null ||
                     // or carrier is not the first in the queue
@@ -100,18 +116,10 @@ public class Port implements Runnable,
                 freePier = getFreePier();
             }
             final MaritimeCarrier<Cargo, ?> poll = shipsQueue.poll();
-            assert poll == carrier : "Bug report: Problems with concurrency - carrier is not first in the queue, when it should";
+            assert poll == carrier : "Bug report: Problems with concurrency - carrier is not first in the queue, when it should; or queue was empty";
 
             return freePier.moor(carrier, estimatedDuration, unit);
         }
-    }
-
-    private Pier getFreePier() {
-        Pier pier = null;
-        final Optional<Pier> any = piers.stream().filter(Pier::isFree).findAny();
-        if (any.isPresent())
-            pier = any.get();
-        return pier;
     }
 
     /**
@@ -119,7 +127,7 @@ public class Port implements Runnable,
      * @see ArrivalService#unmoor
      */
     @Override
-    public void unmoor() throws NotInServiceException {
+    public void unmoor() throws RemoteException {
         synchronized (shipsQueue) {
             final Stream<Pier> pierStream = piers.stream().filter(pier -> pier.getServiceThreadID() == Thread.currentThread().getId());
             if (pierStream.count() == 0)
@@ -180,6 +188,15 @@ public class Port implements Runnable,
                 break;
             }
         }
+    }
+
+    /** @return any free pier */
+    private Pier getFreePier() {
+        Pier pier = null;
+        final Optional<Pier> any = piers.stream().filter(Pier::isFree).findAny();
+        if (any.isPresent())
+            pier = any.get();
+        return pier;
     }
 
     @Override

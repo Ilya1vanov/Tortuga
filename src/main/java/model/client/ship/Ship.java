@@ -1,6 +1,5 @@
 package model.client.ship;
 
-import com.google.gson.annotations.Expose;
 import gson.GSONExclude;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -20,7 +19,6 @@ import model.server.portsystem.Pier;
 import model.server.portsystem.Port;
 import org.apache.log4j.Logger;
 import org.jscience.physics.amount.Amount;
-import org.jscience.physics.amount.AmountFormat;
 
 import javax.measure.quantity.Mass;
 import javax.measure.quantity.Velocity;
@@ -29,6 +27,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -45,9 +44,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class Ship implements Runnable, MaritimeCarrier<Cargo, Ship> {
     /** final log4j logger */
-    private Logger log = Logger.getLogger(getClass());
-
-    private static final String CLASS_LOG_PATH = Ship.class.getSimpleName().toLowerCase();
+    private static Logger log = Logger.getLogger(Ship.class);
 
     /** thread-safe id counter */
     private static final AtomicInteger idCounter = new AtomicInteger(1);
@@ -57,7 +54,7 @@ public class Ship implements Runnable, MaritimeCarrier<Cargo, Ship> {
 
     /** name of the ship */
     @XmlAttribute
-    private  String name;
+    private String name;
 
     /** ship's displacement */
     @GSONExclude
