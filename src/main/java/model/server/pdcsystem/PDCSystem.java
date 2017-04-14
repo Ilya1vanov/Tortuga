@@ -7,7 +7,7 @@ import model.server.interfaces.targetareas.CollectingArea;
 import model.server.interfaces.targetareas.SupplyingArea;
 import model.server.pdcsystem.collector.Collector;
 import model.server.pdcsystem.customer.Customer;
-import model.server.pdcsystem.factories.SingleFactory;
+import model.server.interfaces.production.SingleFactory;
 import model.server.pdcsystem.handbook.Handbook;
 import org.apache.log4j.Logger;
 
@@ -41,7 +41,7 @@ public class PDCSystem<PTS extends Producible & Transportable & Storable> implem
     public PDCSystem(SupplyingArea<PTS> supplyingArea, CollectingArea<PTS> collectingArea, SingleFactory<PTS> factory, Handbook<PTS> handbook) {
         this(supplyingArea,
                 collectingArea,
-                new Customer<PTS>(handbook, factory, supplyingArea), new Collector<>(collectingArea));
+                new Customer<>(handbook, factory, supplyingArea), new Collector<>(collectingArea));
     }
 
     public PDCSystem(SupplyingArea<PTS> supplyingArea, CollectingArea<PTS> collectingArea, Customer<PTS> customer, Collector<PTS> collector) {

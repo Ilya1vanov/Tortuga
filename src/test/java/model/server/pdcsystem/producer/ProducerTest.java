@@ -7,8 +7,7 @@ import model.server.interfaces.parties.Client;
 import model.server.interfaces.parties.Performer;
 import model.server.interfaces.production.Producible;
 import model.server.pdcsystem.contracts.ProductionOrder;
-import model.server.pdcsystem.factories.MultipleFactory;
-import model.server.pdcsystem.factories.SingleFactory;
+import model.server.interfaces.production.SingleFactory;
 import org.jscience.physics.amount.Amount;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +17,6 @@ import javax.measure.quantity.Mass;
 import javax.measure.quantity.Volume;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;

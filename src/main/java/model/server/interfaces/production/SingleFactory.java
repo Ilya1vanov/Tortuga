@@ -1,4 +1,4 @@
-package model.server.pdcsystem.factories;
+package model.server.interfaces.production;
 
 import model.server.interfaces.production.Producible;
 

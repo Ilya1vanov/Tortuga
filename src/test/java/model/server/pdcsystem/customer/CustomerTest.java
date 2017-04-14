@@ -70,7 +70,7 @@ public class CustomerTest<PTS extends Producible & Transportable & Storable> {
         // act
         SUT.makeAnOrder();
         // assert
-        verify(provider).deliver(any(), anyCollection());
+        verify(provider).deliver(any());
     }
 
     /* data-provider method */

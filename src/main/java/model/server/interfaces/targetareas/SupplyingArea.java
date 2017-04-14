@@ -7,6 +7,7 @@ import model.server.interfaces.production.Storable;
 import model.server.interfaces.production.Transportable;
 import model.server.pdcsystem.contracts.CommodityContract;
 import model.server.pdcsystem.contracts.TransportContract;
+import model.server.pdcsystem.order.Order;
 
 import java.util.Collection;
 
@@ -20,11 +21,10 @@ import java.util.Collection;
 public interface SupplyingArea<TS extends Transportable & Storable> {
     /**
      * Supply new (not {@link CommodityContract#isAccepted() isAccepted()}) order.
-     * @param transportContract new transport contract
-     * @param products products according to the {@code transportContract}.
+     * @param order new order
      * @see CommodityContract#isAccepted()
      */
-    void supply(TransportContract<Client, Carrier<TS>, TS> transportContract, Collection<? extends TS> products) throws CapacityViolationException;
+    void supply(Order<TS> order) throws CapacityViolationException;
 
     /**
      * Ask area if it needs supply.

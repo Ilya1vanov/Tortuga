@@ -1,5 +1,6 @@
 package model.server.portsystem;
 
+import com.google.common.collect.ImmutableCollection;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -14,6 +15,7 @@ import model.server.interfaces.parties.Carrier;
 import model.server.interfaces.parties.Client;
 import model.server.interfaces.targetareas.*;
 import model.server.pdcsystem.contracts.TransportContract;
+import model.server.pdcsystem.order.Order;
 import org.apache.log4j.Logger;
 import org.jscience.physics.amount.Amount;
 
@@ -48,11 +50,11 @@ public class Warehouse implements OrdersExchangeArea<Cargo>, SupplyingCollecting
 
 
     /** list that contains new orders list &lt;order, collection of products&gt; */
-    private final ObservableList<Pair<TransportContract<Client, Carrier<Cargo>, Cargo>, Collection<? extends Cargo>>> newOrders
+    private final ObservableList<Order<Cargo>> newOrders
             = FXCollections.observableArrayList();
 
     /** list that contains completed orders list &lt;order, collection of products&gt;  */
-    private final ObservableList<Pair<TransportContract<Client, Carrier<Cargo>, Cargo>, Collection<? extends Cargo>>> completedOrders
+    private final ObservableList<Order<Cargo>> completedOrders
             = FXCollections.observableArrayList();
 
     /** default constructor for JAXB */
@@ -69,8 +71,8 @@ public class Warehouse implements OrdersExchangeArea<Cargo>, SupplyingCollecting
 
     {
         nowStore.bind(
-                Bindings.createIntegerBinding(() ->  newOrders.stream().mapToInt(pair -> pair.getKey().getTotalItems()).sum(), Bindings.size(newOrders))
-                .add(Bindings.createIntegerBinding(() -> completedOrders.stream().mapToInt(pair -> pair.getValue().size()).sum(), Bindings.size(completedOrders)))
+                Bindings.createIntegerBinding(() ->  newOrders.stream().mapToInt(order -> order.getContract().getTotalItems()).sum(), Bindings.size(newOrders))
+                .add(Bindings.createIntegerBinding(() -> completedOrders.stream().mapToInt(order -> order.getProduction().size()).sum(), Bindings.size(completedOrders)))
         );
     }
 
@@ -84,19 +86,21 @@ public class Warehouse implements OrdersExchangeArea<Cargo>, SupplyingCollecting
      * @see OrdersDeliveryArea
      */
     @Override
-    public void putOrder(TransportContract<Client, Carrier<Cargo>, Cargo> transportContract, Collection<? extends Cargo> products)
+    public void putOrder(Order<Cargo> order)
             throws CapacityViolationException {
-        if (transportContract.getTotalItems() > capacity)
+        final TransportContract<Client, Carrier<Cargo>, Cargo> contract = order.getContract();
+
+        if (contract.getTotalItems() > capacity)
             throw new CapacityViolationException("Warehouse is unable to place production");
         synchronized (completedOrders) {
-            while (transportContract.getTotalItems() > capacity - nowStore.get())
+            while (contract.getTotalItems() > capacity - nowStore.get())
                 try {
                     completedOrders.wait();
                 } catch (InterruptedException e) {
                     // suppress
                     e.printStackTrace();
                 }
-            completedOrders.add(new Pair<>(transportContract, products));
+            completedOrders.add(order);
         }
     }
 
@@ -105,9 +109,9 @@ public class Warehouse implements OrdersExchangeArea<Cargo>, SupplyingCollecting
      * @see OrdersDispatchArea
      */
     @Override
-    public Pair<TransportContract<Client, Carrier<Cargo>, Cargo>, Collection<? extends Cargo>> takeOrder() throws RemoteException {
+    public Order<Cargo> takeOrder() throws RemoteException {
         synchronized(newOrders) {
-            Pair<TransportContract<Client, Carrier<Cargo>, Cargo>, Collection<? extends Cargo>> suitable = getSuitableOrder();
+            Order<Cargo> suitable = getSuitableOrder();
 
             while (newOrders.isEmpty() || suitable == null) {
                 try {
@@ -128,17 +132,17 @@ public class Warehouse implements OrdersExchangeArea<Cargo>, SupplyingCollecting
      * Find suitable, to the currently moored carrier, order, if present.
      * @return suitable, to the currently moored carrier, order; null if no suitable
      */
-    private Pair<TransportContract<Client, Carrier<Cargo>, Cargo>, Collection<? extends Cargo>> getSuitableOrder() throws RemoteException {
-        final MaritimeCarrier<Cargo, ?> maritimeCarrier = pier.getMaritimeCarrier();
+    private Order<Cargo> getSuitableOrder() throws RemoteException {
+        final MaritimeCarrier<Cargo> maritimeCarrier = pier.getMaritimeCarrier();
         final Amount<Mass> carrying = maritimeCarrier.getCarrying();
         final Amount<Volume> volume = maritimeCarrier.getVolume();
 
-        Pair<TransportContract<Client, Carrier<Cargo>, Cargo>, Collection<? extends Cargo>> suitable = null;
-        final Optional<Pair<TransportContract<Client,Carrier<Cargo>, Cargo>, Collection<? extends Cargo>>> any =
+        Order<Cargo> suitable = null;
+        final Optional<Order<Cargo>> any =
                 newOrders.stream()
-                        .filter(pair ->
-                                pair.getKey().getTotalVolume().compareTo(volume) <= 0 &&
-                                        pair.getKey().getTotalWeight().compareTo(carrying) <= 0)
+                        .filter(order ->
+                                order.getContract().getTotalVolume().compareTo(volume) <= 0 &&
+                                        order.getContract().getTotalWeight().compareTo(carrying) <= 0)
                         .findAny();
         if (any.isPresent())
             suitable = any.get();
@@ -150,7 +154,7 @@ public class Warehouse implements OrdersExchangeArea<Cargo>, SupplyingCollecting
      * @see CollectingArea#collect()
      */
     @Override
-    public Collection<Pair<TransportContract, Collection<? extends Cargo>>> collect() {
+    public Collection<Order<Cargo>> collect() {
         synchronized (completedOrders) {
             final ArrayList arrayList = new ArrayList<>(completedOrders);
             completedOrders.clear();
@@ -170,22 +174,24 @@ public class Warehouse implements OrdersExchangeArea<Cargo>, SupplyingCollecting
 
     /**
      * {@inheritDoc}
-     * @see model.server.interfaces.targetareas.SupplyingArea#supply(TransportContract, Collection)
+     * @see model.server.interfaces.targetareas.SupplyingArea#supply
      */
     @Override
-    public void supply(TransportContract<Client, Carrier<Cargo>, Cargo> transportContract, Collection<? extends Cargo> products)
+    public void supply(Order<Cargo> order)
             throws CapacityViolationException {
-        if (transportContract.getTotalItems() > capacity)
+        final TransportContract<Client, Carrier<Cargo>, Cargo> contract = order.getContract();
+
+        if (contract.getTotalItems() > capacity)
             throw new CapacityViolationException("Warehouse is unable to place production");
         synchronized(newOrders) {
-            while (transportContract.getTotalItems() > capacity - nowStore.get())
+            while (contract.getTotalItems() > capacity - nowStore.get())
                 try {
                     newOrders.wait();
                 } catch (InterruptedException e) {
                     // suppress
                     e.printStackTrace();
                 }
-            newOrders.add(new Pair<>(transportContract, products));
+            newOrders.add(order);
             newOrders.notifyAll();
         }
     }

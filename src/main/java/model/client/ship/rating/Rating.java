@@ -43,7 +43,7 @@ public class Rating implements Comparable<Rating> {
      * Returns rounded current rating.
      * @return {@code currentRank} rounded to the one decimal place.
      */
-    public double getCurrentRank() {
+    double getCurrentRank() {
         // precision is 1
         return roundWithPrecision(currentRank, 1);
     }

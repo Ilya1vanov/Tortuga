@@ -14,7 +14,9 @@ import model.server.interfaces.parties.Client;
 import model.server.interfaces.production.Transportable;
 import model.server.interfaces.remote.ArrivalService;
 import model.server.interfaces.targetareas.OrdersExchangeArea;
+import model.server.pdcsystem.contracts.Importance;
 import model.server.pdcsystem.contracts.TransportContract;
+import model.server.pdcsystem.order.Order;
 import model.server.portsystem.Pier;
 import model.server.portsystem.Port;
 import org.apache.log4j.Logger;
@@ -42,7 +44,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * time was exceeded, {@link Rating rating} of this {@code Ship} falls.</p>
  * @author Ilya Ivanov
  */
-public class Ship implements Runnable, MaritimeCarrier<Cargo, Ship> {
+public class Ship implements Runnable, MaritimeCarrier<Cargo> {
     /** final log4j logger */
     private static Logger log = Logger.getLogger(Ship.class);
 
@@ -75,13 +77,8 @@ public class Ship implements Runnable, MaritimeCarrier<Cargo, Ship> {
     /** rating of the ship */
     private final Rating rating = new Rating();
 
-    /** contract */
-    @GSONExclude
-    private TransportContract<Client, Carrier<Cargo>, Cargo> contract;
-
-    /** transported goods. defaults to 50*/
-    @GSONExclude
-    private final List<Cargo> goods = new ArrayList<>(50);
+    /** executing order */
+    private Order<Cargo> order;
 
     /** remote interface */
     @GSONExclude
@@ -139,6 +136,12 @@ public class Ship implements Runnable, MaritimeCarrier<Cargo, Ship> {
         return logbook;
     }
 
+    /** {@inheritDoc}*/
+    @Override
+    public Order<Cargo> getOrder() {
+        return order;
+    }
+
     /** @return current ship status */
     public ShipStatus getStatus() {
         return status.get();
@@ -164,6 +167,7 @@ public class Ship implements Runnable, MaritimeCarrier<Cargo, Ship> {
         this.service = service;
     }
 
+    /** private suit of setter for JAXB */
     @XmlElement(name = "displacement", required = true)
     private void setDisplacement_(String displacement) {
         this.displacement = (Amount<Volume>) Amount.valueOf(displacement);
@@ -192,24 +196,21 @@ public class Ship implements Runnable, MaritimeCarrier<Cargo, Ship> {
                 status.set(ShipStatus.IDLE);
                 final OrdersExchangeArea<Cargo> exchangeArea = service.moor(this, calculateMooringTime(), TimeUnit.MILLISECONDS);
                 // 2. unload
-                if (contract != null) {
+                if (order != null) {
                     status.set(ShipStatus.UNLOADING);
+                    final TransportContract<Client, Carrier<Cargo>, Cargo> contract = order.getContract();
                     contract.complete();
-                    exchangeArea.putOrder(contract, new ArrayList<>(goods));
-                    goods.clear();
-                    contract = null;
+                    exchangeArea.putOrder(order);
+                    order = null;
                     TimeUnit.MILLISECONDS.sleep(calculateLoadingTime());
                 }
                 // 3. take a new order
                 status.set(ShipStatus.LOADING);
-                final Pair<TransportContract<Client, Carrier<Cargo>, Cargo>, Collection<? extends Cargo>> order = exchangeArea.takeOrder();
+                final Order<Cargo> order = exchangeArea.takeOrder();
                 // 3. accept order
-                final TransportContract<Client, Carrier<Cargo>, Cargo> contract = order.getKey();
-                contract.accept(this);
+                order.getContract().accept(this);
                 // 4. load
-                this.contract = contract;
-                final Collection<? extends Cargo> cargos = order.getValue();
-                goods.addAll(cargos);
+                this.order = order;
                 TimeUnit.MILLISECONDS.sleep(calculateLoadingTime());
                 // 5. unmoor
                 service.unmoor();
@@ -222,28 +223,23 @@ public class Ship implements Runnable, MaritimeCarrier<Cargo, Ship> {
         }
     }
 
-    /** @return estimated mooring time */
+    /** @return estimated mooring time in millis */
     private int calculateMooringTime() {
         final int i = calculateLoadingTime();
         int coefficient = 0;
         if (i == 0)
-            coefficient = 200;
-        return 2 * i + 500 + coefficient;
+            coefficient = 100;
+        return 2 * i + 200 + coefficient;
     }
 
-    /** @return estimated loading time */
+    /** @return estimated loading time in millis */
     private int calculateLoadingTime() {
         int estimatedTime = 0;
-        if (contract != null) {
-            contract.getTotalItems();
+        if (order != null) {
+            final int totalItems = order.getContract().getTotalItems();
+            estimatedTime = 2 * totalItems;
         }
         return estimatedTime;
-    }
-
-    /* comparison by rating */
-    @Override
-    public int compareTo(Ship o) {
-        return rating.compareTo(o.rating);
     }
 
     @Override

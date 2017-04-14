@@ -1,6 +1,7 @@
-package model.server.pdcsystem.factories;
+package model.server.pdcsystem.factory;
 
 import model.server.interfaces.production.Producible;
+import model.server.interfaces.production.SingleFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;

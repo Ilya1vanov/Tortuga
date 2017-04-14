@@ -1,11 +1,13 @@
 package model.server.pdcsystem.provider;
 
+import com.google.common.collect.ImmutableCollection;
 import model.server.interfaces.parties.Carrier;
 import model.server.interfaces.parties.Client;
 import model.server.interfaces.production.Storable;
 import model.server.interfaces.production.Transportable;
 import model.server.interfaces.targetareas.SupplyingArea;
 import model.server.pdcsystem.contracts.TransportContract;
+import model.server.pdcsystem.order.Order;
 import org.apache.log4j.Logger;
 
 import java.util.Collection;
@@ -30,14 +32,16 @@ public class Provider<TS extends Transportable & Storable>
 
     /**
      * Delivers products to the {@code from} point of departure.
-     * @param contract contract
-     * @param products produced products
+     * @param order order to deliver
      */
-    public void deliver(TransportContract<Client, Carrier<TS>, TS> contract, Collection<? extends TS> products) {
-        if (contract == null || products == null)
-            throw new IllegalArgumentException("Null arguments passed: " + contract + products);
+    public void deliver(Order<TS> order) {
+        final TransportContract<Client, Carrier<TS>, TS> contract = order.getContract();
+        final ImmutableCollection<? extends TS> production = order.getProduction();
+
+        if (contract == null || production == null)
+            throw new IllegalArgumentException("Null arguments passed: " + contract + production);
         try {
-            supplyingArea.supply(contract, products);
+            supplyingArea.supply(order);
         } catch (Exception e) {
             log.warn("Unbounded delivery area thrown exception", e);
             assert false : "Unbounded delivery area thrown exception" ;

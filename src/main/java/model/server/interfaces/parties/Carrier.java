@@ -1,6 +1,7 @@
 package model.server.interfaces.parties;
 
 import model.server.interfaces.production.Transportable;
+import model.server.pdcsystem.order.Order;
 import org.jscience.physics.amount.Amount;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -21,6 +22,11 @@ public interface Carrier<T extends Transportable> extends Performer {
 
     /** @return deadweight for transport */
     default Amount<Mass> getCarrying() throws RemoteException {
+        throw new NotImplementedException();
+    }
+
+    /** @return order, that is currently transporting by this carrier; null if no orders is carrying */
+    default Order getOrder() throws RemoteException {
         throw new NotImplementedException();
     }
 }

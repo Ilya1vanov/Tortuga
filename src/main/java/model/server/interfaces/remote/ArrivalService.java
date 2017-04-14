@@ -24,7 +24,7 @@ public interface ArrivalService<TS extends Transportable & Storable> extends Rem
      * @param <S> sea transport
      * @return interface for handling goods
      */
-    <S extends MaritimeCarrier<TS, ?>>
+    <S extends MaritimeCarrier<TS>>
     OrdersExchangeArea<TS> moor(S carrier, long estimatedDuration, TimeUnit unit) throws RemoteException;
 
     /**

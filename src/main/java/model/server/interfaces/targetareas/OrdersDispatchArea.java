@@ -7,6 +7,7 @@ import model.server.interfaces.parties.Carrier;
 import model.server.interfaces.parties.Client;
 import model.server.interfaces.production.Storable;
 import model.server.interfaces.production.Transportable;
+import model.server.pdcsystem.order.Order;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
@@ -22,10 +23,10 @@ public interface OrdersDispatchArea<TS extends Transportable & Storable> extends
     /**
      * Take new (not {@link CommodityContract#isAccepted() isAccepted()}) order.
      * <p><b>Note: </b>Implementation must be thread-safe.</p>
-     * @return pair of suitable order and
+     * @return suitable order
      * @throws RemoteException if some remote exception occurs
      * @see CommodityContract#accept accept()
      */
-    Pair<TransportContract<Client, Carrier<TS>, TS>, Collection<? extends TS>> takeOrder()
+    Order<TS> takeOrder()
             throws RemoteException;
 }

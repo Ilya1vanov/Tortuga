@@ -1,5 +1,6 @@
 package model.server.portsystem;
 
+import com.google.common.collect.ImmutableCollection;
 import javafx.util.Pair;
 import model.cargo2.Cargo;
 import model.client.interfaces.MaritimeCarrier;
@@ -14,6 +15,7 @@ import model.server.interfaces.targetareas.OrdersExchangeArea;
 import model.server.interfaces.targetareas.SupplyingArea;
 import model.server.interfaces.targetareas.SupplyingCollectingArea;
 import model.server.pdcsystem.contracts.TransportContract;
+import model.server.pdcsystem.order.Order;
 import org.apache.log4j.Logger;
 
 import javax.xml.bind.Unmarshaller;
@@ -21,10 +23,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
@@ -50,7 +49,15 @@ public class Port implements Runnable,
 //    /** output products buffer */
 //    BlockingQueue<Cargo> productsOutputBuf = new ArrayBlockingQueue<Cargo>(5, true);
     /** ships queue */
-    private final PriorityBlockingQueue<MaritimeCarrier<Cargo, ?>> shipsQueue = new PriorityBlockingQueue<>();
+    private final PriorityBlockingQueue<MaritimeCarrier<Cargo>> shipsQueue
+            = new PriorityBlockingQueue<>(50, (o1, o2) -> {
+                try {
+                    return o1.compareTo(o2);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                    return 0;
+                }
+            });
 
     /** list of {@link Pier Piers} of this {@code Port} */
     @XmlElement(name="pier", required = true)
@@ -98,7 +105,7 @@ public class Port implements Runnable,
      * @see ArrivalService#moor(MaritimeCarrier, long, TimeUnit)
      */
     @Override
-    public <S extends MaritimeCarrier<Cargo, ?>> OrdersExchangeArea<Cargo> moor(S carrier, long estimatedDuration, TimeUnit unit) {
+    public <S extends MaritimeCarrier<Cargo>> OrdersExchangeArea<Cargo> moor(S carrier, long estimatedDuration, TimeUnit unit) {
         synchronized (shipsQueue) {
             Pier freePier = getFreePier();
             // add carrier to the queue
@@ -115,7 +122,7 @@ public class Port implements Runnable,
                 }
                 freePier = getFreePier();
             }
-            final MaritimeCarrier<Cargo, ?> poll = shipsQueue.poll();
+            final MaritimeCarrier<Cargo> poll = shipsQueue.poll();
             assert poll == carrier : "Bug report: Problems with concurrency - carrier is not first in the queue, when it should; or queue was empty";
 
             return freePier.moor(carrier, estimatedDuration, unit);
@@ -164,8 +171,8 @@ public class Port implements Runnable,
      * @see CollectingArea#collect()
      */
     @Override
-    public Collection<Pair<TransportContract, Collection<? extends Cargo>>> collect() {
-        Collection<Pair<TransportContract, Collection<? extends Cargo>>> collected = new ArrayList<>();
+    public Collection<Order<Cargo>> collect() {
+        Collection<Order<Cargo>> collected = new ArrayList<>();
         for (Pier pier : piers)
             collected.addAll(pier.getWarehouse().collect());
         return collected;
@@ -173,15 +180,15 @@ public class Port implements Runnable,
 
     /**
      * {@inheritDoc}
-     * @see model.server.interfaces.targetareas.SupplyingArea#supply(TransportContract, Collection)
+     * @see model.server.interfaces.targetareas.SupplyingArea#supply
      */
     @Override
-    public void supply(TransportContract<Client, Carrier<Cargo>, Cargo> transportContract, Collection<? extends Cargo> products) {
+    public void supply(Order<Cargo> order) {
         for (Pier pier : piers) {
             final Warehouse warehouse = pier.getWarehouse();
             if (warehouse.isSupplyingRequired()) {
                 try {
-                    warehouse.supply(transportContract, products);
+                    warehouse.supply(order);
                 } catch (CapacityViolationException e) {
                     continue;
                 }

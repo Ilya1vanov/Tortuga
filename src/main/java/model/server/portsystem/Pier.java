@@ -45,7 +45,7 @@ public class Pier implements ArrivalService<Cargo> {
     private Warehouse warehouse;
 
     /** currently moored maritimeCarrier */
-    private MaritimeCarrier<Cargo, ?> maritimeCarrier;
+    private MaritimeCarrier<Cargo> maritimeCarrier;
 
     /** id of thread, that process this mooring */
     @GSONExclude
@@ -101,7 +101,7 @@ public class Pier implements ArrivalService<Cargo> {
     }
 
     /** @return currently moored maritimeCarrier */
-    MaritimeCarrier<Cargo, ?> getMaritimeCarrier() {
+    MaritimeCarrier<Cargo> getMaritimeCarrier() {
         return maritimeCarrier;
     }
 
@@ -120,7 +120,7 @@ public class Pier implements ArrivalService<Cargo> {
      * @see ArrivalService#moor(MaritimeCarrier, long, TimeUnit)
      */
     @Override
-    public <S extends MaritimeCarrier<Cargo, ?>> OrdersExchangeArea<Cargo> moor(S carrier, long estimatedDuration, TimeUnit unit) {
+    public <S extends MaritimeCarrier<Cargo>> OrdersExchangeArea<Cargo> moor(S carrier, long estimatedDuration, TimeUnit unit) {
         assert maritimeCarrier != null : "Concurrency bug: " + id + " pier is not free";
 
         maritimeCarrier = carrier;

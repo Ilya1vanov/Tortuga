@@ -1,6 +1,6 @@
 package model.cargo2;
 
-import model.server.pdcsystem.factories.SingleFactory;
+import model.server.interfaces.production.SingleFactory;
 
 /**
  * @author Ilya Ivanov

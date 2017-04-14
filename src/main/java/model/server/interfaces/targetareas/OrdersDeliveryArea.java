@@ -7,6 +7,7 @@ import model.server.interfaces.parties.Carrier;
 import model.server.interfaces.parties.Client;
 import model.server.interfaces.production.Storable;
 import model.server.interfaces.production.Transportable;
+import model.server.pdcsystem.order.Order;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
@@ -23,12 +24,12 @@ public interface OrdersDeliveryArea<TS extends Transportable & Storable> extends
     /**
      * Puts completed TransportContract and products to this {@code OrdersDeliveryArea}.
      * <p><b>Note: </b>Implementation must be thread-safe.</p>
-     * @param transportContract new transport contract
-     * @param products products according to the {@code transportContract}.
+     * @param order completed order
+     * @throws RemoteException if some remote error occurred
      * @throws CapacityViolationException if capacity of storage doesn't allow to place required order
      * but there is not enough space, was made.
      * @see CommodityContract#isCompleted()
      */
-    void putOrder(TransportContract<Client, Carrier<TS>, TS> transportContract, Collection<? extends TS> products)
+    void putOrder(Order<TS> order)
             throws RemoteException, CapacityViolationException;
 }

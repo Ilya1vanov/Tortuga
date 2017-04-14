@@ -5,7 +5,7 @@ import model.server.exceptions.CapacityViolationException;
 import model.server.interfaces.production.Producible;
 import model.server.interfaces.targetareas.CollectingArea;
 import model.server.interfaces.targetareas.SupplyingArea;
-import model.server.pdcsystem.factories.SingleFactory;
+import model.server.interfaces.production.SingleFactory;
 import model.server.pdcsystem.handbook.Handbook;
 import org.jscience.physics.amount.Amount;
 import org.junit.Before;
@@ -35,7 +35,7 @@ public class PDCSystemTest {
         try {
             when(collectingArea.collect()).thenReturn(Arrays.asList("a", "b"));
             when(collectingArea.isCollectingRequired()).thenReturn(true);
-            doNothing().when(supplyingArea).supply(any(), anyCollectionOf(Producible.class));
+            doNothing().when(supplyingArea).supply(any());
             when(supplyingArea.isSupplyingRequired()).thenReturn(true);
             when(singleFactory.create(anyString())).thenReturn(null);
 

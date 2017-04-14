@@ -1,5 +1,6 @@
 package model.server.pdcsystem.customer;
 
+import com.google.common.collect.ImmutableCollection;
 import javafx.util.Pair;
 import model.server.interfaces.parties.Carrier;
 import model.server.interfaces.parties.Client;
@@ -10,8 +11,8 @@ import model.server.interfaces.targetareas.SupplyingArea;
 import model.server.pdcsystem.contracts.CommodityContract;
 import model.server.pdcsystem.contracts.ProductionOrder;
 import model.server.pdcsystem.contracts.TransportContract;
-import model.server.pdcsystem.factories.MultipleFactory;
-import model.server.pdcsystem.factories.SingleFactory;
+import model.server.interfaces.production.SingleFactory;
+import model.server.pdcsystem.order.Order;
 import model.server.pdcsystem.producer.Producer;
 import model.server.pdcsystem.provider.Provider;
 import model.server.pdcsystem.handbook.Handbook;
@@ -19,7 +20,6 @@ import org.apache.log4j.Logger;
 import org.jscience.physics.amount.Amount;
 
 import javax.measure.quantity.Mass;
-import javax.measure.quantity.Quantity;
 import javax.measure.quantity.Volume;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -90,11 +90,11 @@ public class Customer<PTS extends Producible & Transportable & Storable> impleme
         order = new ProductionOrder<>(this, producer, notations, totalWeight, totalVolume);
 
         log.info("The order was made");
-        final Collection<? extends PTS> production = producer.produce(order);
+        final ImmutableCollection<? extends PTS> production = producer.produce(order);
 
         TransportContract<Client, Carrier<PTS>, PTS> contract;
         contract = new TransportContract<>(this, notations, totalWeight, totalVolume,"Tortuga", "Minsk");
 
-        provider.deliver(contract, production);
+        provider.deliver(new Order<>(contract, production));
     }
 }

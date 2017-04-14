@@ -1,11 +1,13 @@
 package model.server.pdcsystem.producer;
 
+import com.google.common.collect.ImmutableCollection;
+import com.google.common.collect.ImmutableList;
 import javafx.util.Pair;
 import model.server.interfaces.parties.Performer;
 import model.server.interfaces.production.Producible;
 import model.server.pdcsystem.contracts.ProductionOrder;
-import model.server.pdcsystem.factories.MultipleFactory;
-import model.server.pdcsystem.factories.SingleFactory;
+import model.server.pdcsystem.factory.MultipleFactory;
+import model.server.interfaces.production.SingleFactory;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -36,9 +38,9 @@ public class Producer<P extends Producible> implements Performer {
      * @throws IllegalArgumentException if one of the pair contains null or
      * key is empty string or value <= 0
      */
-    public Collection<P> produce(ProductionOrder<?, ? extends  Producer<P>, P> order) {
+    public ImmutableCollection<P> produce(ProductionOrder<?, ? extends  Producer<P>, P> order) {
         final Collection<Pair<String, Integer>> notations = order.getNotations();
-        List<P> implementation = new ArrayList<>(order.getTotalItems());
+        Collection<P> implementation = new ArrayList<>(order.getTotalItems());
 
         for (Pair<String, Integer> entry : notations) {
             final String key = entry.getKey();
@@ -51,6 +53,7 @@ public class Producer<P extends Producible> implements Performer {
         }
 
         log.info("Goods produced");
-        return implementation;
+
+        return ImmutableList.copyOf(implementation);
     }
 }

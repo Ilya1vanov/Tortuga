@@ -27,6 +27,9 @@ public abstract class CommodityContract<C extends Client, P extends Performer> i
     @GSONExclude
     private P performer;
 
+    /** importance of production delivering */
+    Importance importance;
+
     /** time and date when {@code CargoTransportContract} was taken */
     @GSONExclude
     private LocalDateTime taken;
@@ -48,19 +51,40 @@ public abstract class CommodityContract<C extends Client, P extends Performer> i
     @GSONExclude
     private Collection<Pair<String, Integer>> notations;
 
+    // Rep invariant:
+    //      notations is immutable, not empty map of entries: key is a name of production, value is amount of productions units
+    // Abstract function:
+    //      represents a contract between client and performer
+    // Rep exposure safety:
+    //      All fields are private
+    //      taken and completed dates are immutable LocalDateTime type
+    //      importance in immutable
+
+    /**
+     * {@code importance} is defaults to {@link Importance Importance.NORMAL}.
+     * @see #CommodityContract(Client, Collection, Amount, Amount, Importance)
+     */
+    public CommodityContract(C client, Collection<Pair<String, Integer>> notations, Amount<Mass> totalWeight, Amount<Volume> totalVolume) {
+        this(client, notations, totalWeight, totalVolume, Importance.NORMAL);
+    }
+
     /**
      * Create new contract with specified customer. This contract
      * has open type.
      * @param client customer
      * @param notations pairs like: name, number of items
+     * @param totalWeight summary weight of production
+     * @param totalVolume summary volume of production
+     * @param importance importance of transportation
      * @throws IllegalArgumentException if one of the pair contains null or
      * key is empty string or value <= 0
      */
-    CommodityContract(C client, Collection<Pair<String, Integer>> notations, Amount<Mass> totalWeight, Amount<Volume> totalVolume) {
+    CommodityContract(C client, Collection<Pair<String, Integer>> notations, Amount<Mass> totalWeight, Amount<Volume> totalVolume, Importance importance) {
         this.client = client;
         this.notations = notations;
         this.totalWeight = totalWeight;
         this.totalVolume = totalVolume;
+        this.importance = importance;
 
         for (Pair<String, Integer> notation : notations) {
             final String key = notation.getKey();
@@ -74,11 +98,24 @@ public abstract class CommodityContract<C extends Client, P extends Performer> i
     /**
      * Create new contract with specified customer. This contract
      * has closed type.
-     * @see CommodityContract#CommodityContract(Client, Collection, Amount, Amount)
+     * @see CommodityContract#CommodityContract(Client, Collection, Amount, Amount, Importance)
+     */
+    CommodityContract(C client, P performer, Collection<Pair<String, Integer>> notations, Amount<Mass> totalWeight, Amount<Volume> totalVolume, Importance importance) {
+        this(client, notations, totalWeight, totalVolume, importance);
+        accept(performer);
+    }
+
+    /**
+     * {@code importance} is defaults to {@link Importance Importance.NORMAL}.
+     * @see CommodityContract#CommodityContract(Client, Collection, Amount, Amount, Importance)
      */
     CommodityContract(C client, P performer, Collection<Pair<String, Integer>> notations, Amount<Mass> totalWeight, Amount<Volume> totalVolume) {
-        this(client, notations, totalWeight, totalVolume);
+        this(client, notations, totalWeight, totalVolume, Importance.NORMAL);
         accept(performer);
+    }
+
+    /** always check representation invariant after construction */{
+        checkRep();
     }
 
     /** @return client (customer) */
@@ -89,6 +126,10 @@ public abstract class CommodityContract<C extends Client, P extends Performer> i
     /** @return performer */
     public P getPerformer() {
         return performer;
+    }
+
+    public Importance getImportance() {
+        return importance;
     }
 
     /**
@@ -178,5 +219,15 @@ public abstract class CommodityContract<C extends Client, P extends Performer> i
                 "client=" + client +
                 ", performer=" + performer +
                 '}';
+    }
+
+    /** check representation */
+    private void checkRep() {
+        assert client != null;
+        assert notations != null;
+        assert !notations.isEmpty();
+        assert totalWeight != null;
+        assert totalVolume != null;
+        assert importance != null;
     }
 }
