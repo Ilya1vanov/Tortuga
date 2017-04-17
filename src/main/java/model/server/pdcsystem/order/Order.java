@@ -8,13 +8,15 @@ import model.server.interfaces.production.Storable;
 import model.server.interfaces.production.Transportable;
 import model.server.pdcsystem.contracts.TransportContract;
 
+import java.io.Serializable;
+
 /**
  * Abstract data type, that represents pair of contract and production,
  * related with it.
  * @param <TS> {@link Producible}, {@link Transportable} and {@link Storable} production
  * @author Ilya Ivanov
  */
-public class Order<TS extends  Transportable & Storable> {
+public class Order<TS extends  Transportable & Storable> implements Serializable {
     private TransportContract<Client, Carrier<TS>, TS> contract;
     private ImmutableCollection<? extends TS> production;
 

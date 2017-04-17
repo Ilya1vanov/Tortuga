@@ -6,13 +6,17 @@ import javafx.util.Pair;
 import model.server.interfaces.parties.Carrier;
 import model.server.interfaces.parties.Client;
 import model.server.interfaces.parties.Performer;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.jscience.physics.amount.Amount;
+import org.mockito.internal.matchers.Not;
 
 import javax.measure.quantity.Mass;
 import javax.measure.quantity.Volume;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Executive contract between {@link Client} and {@link Performer}.
@@ -28,7 +32,7 @@ public abstract class CommodityContract<C extends Client, P extends Performer> i
     private P performer;
 
     /** importance of production delivering */
-    Importance importance;
+    private Importance importance;
 
     /** time and date when {@code CargoTransportContract} was taken */
     @GSONExclude
@@ -49,7 +53,7 @@ public abstract class CommodityContract<C extends Client, P extends Performer> i
 
     /** pairs like: name, number of items */
     @GSONExclude
-    private Collection<Pair<String, Integer>> notations;
+    private Notations notations;
 
     // Rep invariant:
     //      notations is immutable, not empty map of entries: key is a name of production, value is amount of productions units
@@ -58,13 +62,13 @@ public abstract class CommodityContract<C extends Client, P extends Performer> i
     // Rep exposure safety:
     //      All fields are private
     //      taken and completed dates are immutable LocalDateTime type
-    //      importance in immutable
+    //      importance is immutable
 
     /**
      * {@code importance} is defaults to {@link Importance Importance.NORMAL}.
-     * @see #CommodityContract(Client, Collection, Amount, Amount, Importance)
+     * @see #CommodityContract(Client, Notations, Amount, Amount, Importance)
      */
-    public CommodityContract(C client, Collection<Pair<String, Integer>> notations, Amount<Mass> totalWeight, Amount<Volume> totalVolume) {
+    public CommodityContract(C client, Notations notations, Amount<Mass> totalWeight, Amount<Volume> totalVolume) {
         this(client, notations, totalWeight, totalVolume, Importance.NORMAL);
     }
 
@@ -79,43 +83,43 @@ public abstract class CommodityContract<C extends Client, P extends Performer> i
      * @throws IllegalArgumentException if one of the pair contains null or
      * key is empty string or value <= 0
      */
-    CommodityContract(C client, Collection<Pair<String, Integer>> notations, Amount<Mass> totalWeight, Amount<Volume> totalVolume, Importance importance) {
+    public CommodityContract(C client, Notations notations, Amount<Mass> totalWeight, Amount<Volume> totalVolume, Importance importance) {
         this.client = client;
         this.notations = notations;
         this.totalWeight = totalWeight;
         this.totalVolume = totalVolume;
         this.importance = importance;
 
-        for (Pair<String, Integer> notation : notations) {
+        for (Map.Entry<String, Integer> notation : notations.entrySet()) {
             final String key = notation.getKey();
             final Integer value = notation.getValue();
             if (key == null || value == null || key.isEmpty() || value <= 0)
                 throw new IllegalArgumentException("Invalid pair <" + key + ", " + value + ">");
             totalItems += value;
         }
+        checkRep();
     }
 
     /**
      * Create new contract with specified customer. This contract
      * has closed type.
-     * @see CommodityContract#CommodityContract(Client, Collection, Amount, Amount, Importance)
+     * @see CommodityContract#CommodityContract(Client, Notations, Amount, Amount, Importance)
      */
-    CommodityContract(C client, P performer, Collection<Pair<String, Integer>> notations, Amount<Mass> totalWeight, Amount<Volume> totalVolume, Importance importance) {
+    public CommodityContract(C client, P performer, Notations notations, Amount<Mass> totalWeight, Amount<Volume> totalVolume, Importance importance) {
         this(client, notations, totalWeight, totalVolume, importance);
         accept(performer);
     }
 
     /**
      * {@code importance} is defaults to {@link Importance Importance.NORMAL}.
-     * @see CommodityContract#CommodityContract(Client, Collection, Amount, Amount, Importance)
+     * @see CommodityContract#CommodityContract(Client, Performer, Notations, Amount, Amount, Importance)
      */
-    CommodityContract(C client, P performer, Collection<Pair<String, Integer>> notations, Amount<Mass> totalWeight, Amount<Volume> totalVolume) {
-        this(client, notations, totalWeight, totalVolume, Importance.NORMAL);
-        accept(performer);
+    public CommodityContract(C client, P performer, Notations notations, Amount<Mass> totalWeight, Amount<Volume> totalVolume) {
+        this(client, performer, notations, totalWeight, totalVolume, Importance.NORMAL);
     }
 
-    /** always check representation invariant after construction */{
-        checkRep();
+    /** always check representation invariant after construction */ {
+//        checkRep();
     }
 
     /** @return client (customer) */
@@ -194,7 +198,7 @@ public abstract class CommodityContract<C extends Client, P extends Performer> i
     }
 
     /** @return pairs like: name, number of items */
-    public Collection<Pair<String, Integer>> getNotations() {
+    public Notations getNotations() {
         return notations;
     }
 
@@ -225,9 +229,47 @@ public abstract class CommodityContract<C extends Client, P extends Performer> i
     private void checkRep() {
         assert client != null;
         assert notations != null;
-        assert !notations.isEmpty();
         assert totalWeight != null;
         assert totalVolume != null;
         assert importance != null;
+    }
+
+    static public class Notations extends HashMap<String, Integer> {
+        public Notations(String key, Integer value) {
+            super();
+            super.put(key, value);
+            checkRep();
+        }
+
+        public Notations(@NotEmpty Map<? extends String, ? extends Integer> m) {
+            super(m);
+            checkRep();
+        }
+
+        @Override
+        public Integer put(String key, Integer value) {
+            if (this.containsKey(key)) {
+                final Integer integer = get(key);
+                super.put(key, integer + value);
+                return integer;
+            }
+            final Integer put = super.put(key, value);
+            checkRep();
+            return put;
+        }
+
+        @Override
+        public void clear() {}
+
+        @Override
+        public Integer remove(Object key) {
+            final Integer remove = super.remove(key);
+            checkRep();
+            return remove;
+        }
+
+        private void checkRep() {
+            assert !isEmpty() : "Notations is empty";
+        }
     }
 }

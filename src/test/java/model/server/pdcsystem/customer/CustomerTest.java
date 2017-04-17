@@ -85,6 +85,6 @@ public class CustomerTest<PTS extends Producible & Transportable & Storable> {
     @Test(expected = IllegalArgumentException.class)
     @Parameters(method = "getNullInput")
     public void customerShouldThrowIAEForNullInput(Producer producer, Provider provider, Handbook handbook) throws Exception {
-        new Customer(producer, provider, handbook);
+        new Customer<>(producer, provider, handbook);
     }
 }

@@ -3,7 +3,7 @@
 <server backgroundTasksPeriod="5000" backgroundStartDelay="50" portName="Tortuga" portNumber="2002">
     <port name="Tortuga">
         <pier>
-            <warehouse capacity="100"/>
+            <warehouse capacity="120"/>
         </pier>
         <pier>
             <warehouse capacity="150"/>

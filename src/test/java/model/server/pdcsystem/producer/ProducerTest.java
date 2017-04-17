@@ -1,12 +1,13 @@
 package model.server.pdcsystem.producer;
 
-import javafx.util.Pair;
+import com.google.common.collect.ImmutableCollection;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import model.server.interfaces.parties.Client;
 import model.server.interfaces.parties.Performer;
 import model.server.interfaces.production.Producible;
-import model.server.pdcsystem.contracts.ProductionOrder;
+import model.server.pdcsystem.contracts.CommodityContract;
+import model.server.pdcsystem.contracts.ProductionContract;
 import model.server.interfaces.production.SingleFactory;
 import org.jscience.physics.amount.Amount;
 import org.junit.Before;
@@ -15,8 +16,9 @@ import org.junit.runner.RunWith;
 
 import javax.measure.quantity.Mass;
 import javax.measure.quantity.Volume;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -28,11 +30,15 @@ import static org.mockito.Mockito.*;
  */
 @RunWith(JUnitParamsRunner.class)
 public class ProducerTest {
-    private Client client = mock(Client.class);
+    private SingleFactory<Producible> factory = mock(SingleFactory.class);
     private Producible producible = mock(Producible.class);
-    private SingleFactory factory = mock(SingleFactory.class);
-    private final Collection<Pair<String, Integer>> notations = new ArrayList<>();
-    private ProductionOrder<Client, Producer<Producible>, Producible> order;
+
+    private ProductionContract<Client, Producer<Producible>, Producible> contract;
+    private Client client = mock(Client.class);
+    private final Map<String, Integer> map = new HashMap<>();
+    private final Amount<Mass> totalWeight = Amount.valueOf(1, Mass.UNIT);
+    private final Amount<Volume> totalVolume = Amount.valueOf(2, Volume.UNIT);
+
     private Producer<Producible> SUT;
 
     @Before
@@ -81,25 +87,25 @@ public class ProducerTest {
     @Parameters(method = "getInvalidNotations")
     public void producerShouldThrowIAEForInvalidInput(String name, Integer num) throws Exception {
         // arrange
-        notations.add(new Pair<>(name, num));
-        order = new ProductionOrder<>(client, SUT, notations, Amount.valueOf(1, Mass.UNIT), Amount.valueOf(2, Volume.UNIT));
+        map.put(name, num);
+        contract = new ProductionContract<>(client, SUT, new CommodityContract.Notations(map), totalWeight, totalVolume);
         // act
-        SUT.produce(order);
+        SUT.produce(contract);
     }
 
     @Test
     @Parameters(method = "getSimpleNotations")
     public void producerShouldProduce(String name, Integer num) throws Exception {
         // arrange
-        notations.add(new Pair<>(name, num));
+        map.put(name, num);
         when(factory.create(name)).thenReturn(producible);
-        order = new ProductionOrder<>(client, SUT, notations, Amount.valueOf(1, Mass.UNIT), Amount.valueOf(2, Volume.UNIT));
+        contract = new ProductionContract<>(client, SUT, new CommodityContract.Notations(map), totalWeight, totalVolume);
 
         // act
-        final Collection<Producible> produced = SUT.produce(order);
+        final Collection<Producible> produced = SUT.produce(contract);
 
         // assert
-        verify(factory).create(name);
+        verify(factory, times(num)).create(name);
         assertThat("Transmitted and returned collections sizes are different", produced.size(), is(num));
         assertThat("Items in returned collection are not instance of transmitted", produced.iterator().next(), instanceOf(Producible.class));
     }
@@ -110,16 +116,19 @@ public class ProducerTest {
         factory = mock(SingleFactory.class, withSettings().useConstructor().defaultAnswer(CALLS_REAL_METHODS));
         SUT = new Producer<>(factory);
         // arrange
-        int totalNum = 0;
-        for (int i = 0; i < names.length; i++) {
-            notations.add(new Pair<>(names[i], nums[i]));
+        int totalNum = nums[0];
+
+        final CommodityContract.Notations notations = new CommodityContract.Notations(names[0], nums[0]);
+        for (int i = 1; i < names.length; i++) {
+            notations.put(names[i], nums[i]);
             totalNum += nums[i];
         }
+        when(factory.create(anyString())).thenReturn(producible);
 
-        order = new ProductionOrder<>(client, SUT, notations, Amount.valueOf(1, Mass.UNIT), Amount.valueOf(2, Volume.UNIT));
+        contract = new ProductionContract<>(client, SUT, notations, totalWeight, totalVolume);
         // act
-        final Collection<Producible> produced = SUT.produce(order);
+        final ImmutableCollection<Producible> produced = SUT.produce(contract);
         // assert
-        assertThat("Returned collections size doesn't satisfy order", produced.size(), is(totalNum));
+        assertThat("Returned collections size doesn't satisfy contract", produced.size(), is(totalNum));
     }
 }

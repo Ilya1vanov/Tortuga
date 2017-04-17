@@ -15,6 +15,7 @@ import model.server.pdcsystem.PDCSystem;
 import model.server.portsystem.Port;
 import org.apache.log4j.Logger;
 import org.jscience.physics.amount.Amount;
+import view.View;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -25,10 +26,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 import java.io.File;
 import java.lang.reflect.Modifier;
 import java.rmi.NotBoundException;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.rmi.server.Unreferenced;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
@@ -98,8 +101,8 @@ public class Server implements Runnable {
 
     {
         // log RMI-events
-        System.setProperty("java.rmi.server.logCalls", "true");
-        System.setProperty("sun.rmi.server.logLevel", "VERBOSE");
+//        System.setProperty("java.rmi.server.logCalls", "true");
+//        System.setProperty("sun.rmi.server.logLevel", "VERBOSE");
     }
 
     /**
@@ -108,11 +111,15 @@ public class Server implements Runnable {
      */
     private void exportRemote() throws RemoteException {
         // exportRemote remote interface to RMI-registry
-        ArrivalService stub = (ArrivalService) UnicastRemoteObject.exportObject(port, 0);
+        final ArrivalService stub = (ArrivalService) port.exportRemote();
         registry = LocateRegistry.createRegistry(portNumber);
         registry.rebind(portName, stub);
 
         pdcSystem = new CargoPDCSystem(port, port);
+    }
+
+    public Port getPort() {
+        return port;
     }
 
     @Override
@@ -136,7 +143,7 @@ public class Server implements Runnable {
         Background.scheduleAtFixedRate(() -> portLog.warn(gson.toJson(port)), backgroundStartDelay, backgroundTasksPeriod, TimeUnit.MILLISECONDS);
 
         // run delivery system
-        Background.scheduleAtFixedRate(pdcSystem, backgroundStartDelay + backgroundTasksPeriod / 2, backgroundTasksPeriod, TimeUnit.MILLISECONDS);
+        Background.scheduleAtFixedRate(pdcSystem, backgroundStartDelay + backgroundTasksPeriod / 4, backgroundTasksPeriod / 2, TimeUnit.MILLISECONDS);
         log.info("PDCSystem was started\n");
 
         // run port in the current thread
@@ -145,12 +152,16 @@ public class Server implements Runnable {
     }
 
     /** Shutdown server. */
-    public void shutdown() throws RemoteException, NotBoundException {
-        // unbind port
-        registry.unbind(portName);
+    public void shutdown() {
+        try {
+            // unbind port
+            registry.unbind(portName);
 
-        // force unexport
-        UnicastRemoteObject.unexportObject(port, true);
+            // force unexport
+            port.unexportRemote();
+        } catch (RemoteException | NotBoundException e) {
+            e.printStackTrace();
+        }
 
         Background.shutdown();
 
@@ -172,9 +183,11 @@ public class Server implements Runnable {
             server.exportRemote();
         } catch (JAXBException | RemoteException e) {
             log.fatal("Unable to instantiate server", e);
-            e.printStackTrace();
+            throw new RuntimeException("Unable to instantiate server", e);
         }
         // run server in the current thread
         server.run();
+        // show GUI
+        View.getInstance().showMainStage(server);
     }
 }

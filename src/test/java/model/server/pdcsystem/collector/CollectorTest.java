@@ -42,5 +42,4 @@ public class CollectorTest {
 
         verify(collectingArea).collect();
     }
-
 }

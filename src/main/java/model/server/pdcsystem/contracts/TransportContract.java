@@ -29,9 +29,9 @@ public class TransportContract<Cl extends Client, Ca extends Carrier<T>, T exten
     /**
      * @param from point of dispatch
      * @param to destination
-     * @see CommodityContract#CommodityContract(Client, Collection, Amount, Amount)
+     * @see CommodityContract#CommodityContract(Client, Notations, Amount, Amount)
      */
-    public TransportContract(Cl client, Collection<Pair<String, Integer>> notations, Amount<Mass> totalWeight, Amount<Volume> totalVolume, String from, String to) {
+    public TransportContract(Cl client, Notations notations, Amount<Mass> totalWeight, Amount<Volume> totalVolume, String from, String to) {
         super(client, notations, totalWeight, totalVolume);
         this.from = from;
         this.to = to;

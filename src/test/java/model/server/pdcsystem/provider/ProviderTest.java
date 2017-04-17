@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -27,22 +28,24 @@ import static org.mockito.Mockito.verify;
  */
 @RunWith(JUnitParamsRunner.class)
 public class ProviderTest {
-    private SupplyingArea supplyingArea = mock(SupplyingArea.class);
-    private Collection<Producible> collection = mock(Collection.class);
-    private TransportContract<Client, Carrier<Transportable>, Transportable> contract = mock(TransportContract.class);
+    private final SupplyingArea supplyingArea = mock(SupplyingArea.class);
+    private final TransportContract<Client, Carrier<Transportable>, Transportable> contract = mock(TransportContract.class);
+    private final Collection<Producible> collection = new ArrayList<>();
+    private final Producible producible = mock(Producible.class);
     Provider SUT;
 
     @Before
     public void setUp() {
         SUT = new Provider(supplyingArea);
+        collection.add(producible);
     }
 
     /* data-provider method */
     public Object[] data() {
         return new Object[][] {
                 {null, collection},
-                {contract, null},
-                {null, null}
+                {contract, null}
+//                {null, null}
         };
     }
 

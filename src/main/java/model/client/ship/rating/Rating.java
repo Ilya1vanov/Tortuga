@@ -16,7 +16,7 @@ import java.rmi.Remote;
  * {@code rate1.compareTo(rate2) < 0} is true.</p>
  * @author Ilya Ivanov
  */
-public class Rating implements Comparable<Rating> {
+public class Rating implements Comparable<Rating>, Serializable {
     /* log4j logger */
     private static final Logger log = Logger.getLogger(Rating.class);
 
@@ -31,7 +31,7 @@ public class Rating implements Comparable<Rating> {
 
     /**
      * Get rank and calculate new average.
-     * @param rank new rank; null values are ignored
+     * @param rank new assessment; null values are ignored
      */
     public void rate(Stars rank) {
         if (rank == null)

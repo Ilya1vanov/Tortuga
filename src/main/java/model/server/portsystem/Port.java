@@ -1,32 +1,32 @@
 package model.server.portsystem;
 
-import com.google.common.collect.ImmutableCollection;
-import javafx.util.Pair;
+import gson.GSONExclude;
 import model.cargo2.Cargo;
 import model.client.interfaces.MaritimeCarrier;
 import model.client.ship.Ship;
+import model.server.Server;
 import model.server.exceptions.CapacityViolationException;
-import model.server.exceptions.NotInServiceException;
 import model.server.interfaces.remote.ArrivalService;
-import model.server.interfaces.parties.Carrier;
-import model.server.interfaces.parties.Client;
+import model.server.interfaces.remote.DepartService;
 import model.server.interfaces.targetareas.CollectingArea;
-import model.server.interfaces.targetareas.OrdersExchangeArea;
 import model.server.interfaces.targetareas.SupplyingArea;
 import model.server.interfaces.targetareas.SupplyingCollectingArea;
 import model.server.pdcsystem.contracts.TransportContract;
 import model.server.pdcsystem.order.Order;
 import org.apache.log4j.Logger;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import java.rmi.RemoteException;
+import java.rmi.server.Unreferenced;
 import java.util.*;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 /**
  * Port has a several {@link Pier Piers} and {@link Warehouse Stocks}. Able to moor
@@ -34,22 +34,25 @@ import java.util.stream.Stream;
  * @author Ilya Ivanov
  */
 @XmlRootElement
-public class Port implements Runnable,
+public class Port extends RemoteClass
+        implements Runnable,
+        Unreferenced,
         ArrivalService<Cargo>,
         SupplyingCollectingArea<Cargo> {
     /** log4j logger */
     private static final Logger log = Logger.getLogger(Port.class);
 
+    /** parent ref */
+    @GSONExclude
+    @XmlTransient
+    private Server server;
+
     /** name of this port */
     @XmlAttribute
     private String name;
-//    /** input products buffer */
-//    BlockingQueue<Cargo> productsInputBuf = new ArrayBlockingQueue<Cargo>(5, true);
-//
-//    /** output products buffer */
-//    BlockingQueue<Cargo> productsOutputBuf = new ArrayBlockingQueue<Cargo>(5, true);
+
     /** ships queue */
-    private final PriorityBlockingQueue<MaritimeCarrier<Cargo>> shipsQueue
+    final PriorityBlockingQueue<MaritimeCarrier<Cargo>> shipsQueue
             = new PriorityBlockingQueue<>(50, (o1, o2) -> {
                 try {
                     return o1.compareTo(o2);
@@ -61,32 +64,24 @@ public class Port implements Runnable,
 
     /** list of {@link Pier Piers} of this {@code Port} */
     @XmlElement(name="pier", required = true)
-    private List<Pier> piers = new ArrayList<>();
+    private Collection<Pier> piers = new ArrayList<>();
 
     /** default constructor for JAXB */
-    public Port() {}
-
-    /** for manual instantiation */
-    public Port(String name, Pier first, Pier... piers) throws RemoteException {
-        this.name = name;
-        this.piers.add(first);
-        for (Pier pier : piers)
-            this.piers.add(pier);
+    public Port() {
+        super();
     }
 
-    {
-        shipsQueue.comparator();
+    /** for manual instantiation */
+    public Port(String name, @NotEmpty Collection<Pier> piers) throws RemoteException {
+        super(piers);
+        this.name = name;
+        this.piers = piers;
     }
 
     /** Sets up the parent pointer correctly */
     public void afterUnmarshal(Unmarshaller u, Object parent) {
-        for (Pier pier : piers)
-            try {
-                pier.exportRemote();
-            } catch (RemoteException e) {
-                log.fatal("Port failed while exporting remotes", e);
-                throw new RuntimeException("Port failed while exporting remotes", e);
-            }
+        this.server = (Server) parent;
+        super.setRemotes(piers);
     }
 
     /** @return name of this port */
@@ -105,8 +100,9 @@ public class Port implements Runnable,
      * @see ArrivalService#moor(MaritimeCarrier, long, TimeUnit)
      */
     @Override
-    public <S extends MaritimeCarrier<Cargo>> OrdersExchangeArea<Cargo> moor(S carrier, long estimatedDuration, TimeUnit unit) {
+    public <S extends MaritimeCarrier<Cargo>> DepartService<Cargo> moor(S carrier, long estimatedDuration, TimeUnit unit) throws RemoteException {
         synchronized (shipsQueue) {
+            log.info(carrier.getName() + " arrived in port");
             Pier freePier = getFreePier();
             // add carrier to the queue
             shipsQueue.put(carrier);
@@ -115,6 +111,7 @@ public class Port implements Runnable,
                     // or carrier is not the first in the queue
                     shipsQueue.peek() != carrier) {
                 try {
+                    log.info(carrier.getName() + " waiting in the queue");
                     shipsQueue.wait();
                 } catch (InterruptedException e) {
                     // suppress
@@ -125,26 +122,8 @@ public class Port implements Runnable,
             final MaritimeCarrier<Cargo> poll = shipsQueue.poll();
             assert poll == carrier : "Bug report: Problems with concurrency - carrier is not first in the queue, when it should; or queue was empty";
 
+            log.info(carrier.getName() + " will be moored on " + freePier.getId() + " pier");
             return freePier.moor(carrier, estimatedDuration, unit);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     * @see ArrivalService#unmoor
-     */
-    @Override
-    public void unmoor() throws RemoteException {
-        synchronized (shipsQueue) {
-            final Stream<Pier> pierStream = piers.stream().filter(pier -> pier.getServiceThreadID() == Thread.currentThread().getId());
-            if (pierStream.count() == 0)
-                throw new NotInServiceException("Your carrier was not in service. Moor first.");
-            if (pierStream.count() > 1) {
-                log.fatal("More than one threads where created on one connection");
-                throw new RuntimeException("More than one threads where created on one connection");
-            }
-            pierStream.findFirst().get().unmoor();
-            shipsQueue.notifyAll();
         }
     }
 
@@ -184,15 +163,15 @@ public class Port implements Runnable,
      */
     @Override
     public void supply(Order<Cargo> order) {
-        for (Pier pier : piers) {
-            final Warehouse warehouse = pier.getWarehouse();
-            if (warehouse.isSupplyingRequired()) {
-                try {
-                    warehouse.supply(order);
-                } catch (CapacityViolationException e) {
-                    continue;
-                }
-                break;
+        final List<Pier> pierList = piers.stream().filter(pier -> pier.getWarehouse().isSupplyingRequired()).collect(Collectors.toList());
+        final Random random = new Random();
+        final PrimitiveIterator.OfInt iterator = random.ints(pierList.size(), 0, pierList.size()).iterator();
+
+        while (iterator.hasNext()) {
+            try {
+                pierList.get(iterator.next()).getWarehouse().supply(order);
+            } catch (CapacityViolationException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -208,10 +187,19 @@ public class Port implements Runnable,
 
     @Override
     public String toString() {
-        return "Port {" +
-                "name = '" + name + '\'' +
-                ", shipsQueue = " + shipsQueue +
-                ", piers = " + piers +
-                '}';
+        StringBuilder s = new StringBuilder("Port name: '").append(name).append('\'').append('\n').append("Piers: ");
+        for (Pier pier : piers) {
+            s.append(pier.toString());
+        }
+        return s.toString();
+    }
+
+    public PriorityBlockingQueue<MaritimeCarrier<Cargo>> getShipsQueue() {
+        return shipsQueue;
+    }
+
+    @Override
+    public void unreferenced() {
+        server.shutdown();
     }
 }

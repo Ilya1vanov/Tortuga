@@ -2,6 +2,7 @@ package model.server.portsystem;
 
 import com.google.common.collect.ImmutableCollection;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.IntegerBinding;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
@@ -11,6 +12,7 @@ import gson.GSONExclude;
 import model.cargo2.Cargo;
 import model.client.interfaces.MaritimeCarrier;
 import model.server.exceptions.CapacityViolationException;
+import model.server.exceptions.NoSuitableOrder;
 import model.server.interfaces.parties.Carrier;
 import model.server.interfaces.parties.Client;
 import model.server.interfaces.targetareas.*;
@@ -25,14 +27,17 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
 /**
  * Store {@link Cargo Storable}.
  * @author Ilya Ivanov
  */
-public class Warehouse implements OrdersExchangeArea<Cargo>, SupplyingCollectingArea<Cargo> {
+public class Warehouse extends RemoteClass
+        implements OrdersExchangeArea<Cargo>, SupplyingCollectingArea<Cargo> {
     /** log4j logger */
     private static final Logger log = Logger.getLogger(Warehouse.class);
 
@@ -48,7 +53,6 @@ public class Warehouse implements OrdersExchangeArea<Cargo>, SupplyingCollecting
     @GSONExclude
     private Pier pier;
 
-
     /** list that contains new orders list &lt;order, collection of products&gt; */
     private final ObservableList<Order<Cargo>> newOrders
             = FXCollections.observableArrayList();
@@ -58,7 +62,9 @@ public class Warehouse implements OrdersExchangeArea<Cargo>, SupplyingCollecting
             = FXCollections.observableArrayList();
 
     /** default constructor for JAXB */
-    public Warehouse() {}
+    public Warehouse() {
+        super();
+    }
 
     /**
      * @param capacity warehouse capacity
@@ -70,9 +76,14 @@ public class Warehouse implements OrdersExchangeArea<Cargo>, SupplyingCollecting
     }
 
     {
+        final IntegerBinding newOrdersSize = Bindings.size(newOrders);
+        final IntegerBinding completedOrdersSize = Bindings.size(completedOrders);
+        // recalculate
+        newOrdersSize.addListener(observable -> newOrdersSize.get());
+        completedOrdersSize.addListener(observable -> completedOrdersSize.get());
         nowStore.bind(
-                Bindings.createIntegerBinding(() ->  newOrders.stream().mapToInt(order -> order.getContract().getTotalItems()).sum(), Bindings.size(newOrders))
-                .add(Bindings.createIntegerBinding(() -> completedOrders.stream().mapToInt(order -> order.getProduction().size()).sum(), Bindings.size(completedOrders)))
+                Bindings.createIntegerBinding(() ->  newOrders.stream().mapToInt(order -> order.getContract().getTotalItems()).sum(), newOrdersSize)
+                .add(Bindings.createIntegerBinding(() -> completedOrders.stream().mapToInt(order -> order.getProduction().size()).sum(), completedOrdersSize))
         );
     }
 
@@ -87,20 +98,24 @@ public class Warehouse implements OrdersExchangeArea<Cargo>, SupplyingCollecting
      */
     @Override
     public void putOrder(Order<Cargo> order)
-            throws CapacityViolationException {
-        final TransportContract<Client, Carrier<Cargo>, Cargo> contract = order.getContract();
-
-        if (contract.getTotalItems() > capacity)
-            throw new CapacityViolationException("Warehouse is unable to place production");
+            throws RemoteException {
         synchronized (completedOrders) {
-            while (contract.getTotalItems() > capacity - nowStore.get())
+            log.info(pier.getMaritimeCarrier().getName() + " from " + pier.getId() + " is trying to put order");
+
+            final TransportContract<Client, Carrier<Cargo>, Cargo> contract = order.getContract();
+            if (contract.getTotalItems() > capacity)
+                throw new CapacityViolationException("Warehouse is unable to place production");
+
+            while (contract.getTotalItems() > capacity - nowStore.get()) {
+                if (!isCollectingRequired())
+                    throw new CapacityViolationException("Warehouse is unable to place this production now. Come back later.");
                 try {
                     completedOrders.wait();
-                } catch (InterruptedException e) {
-                    // suppress
-                    e.printStackTrace();
-                }
+                    log.info(pier.getMaritimeCarrier().getName() + " from " + pier.getId() + " is some free space to put order");
+                } catch (InterruptedException ignored) {}
+            }
             completedOrders.add(order);
+            log.info(pier.getMaritimeCarrier().getName() + " from " + pier.getId() + " put order");
         }
     }
 
@@ -111,10 +126,14 @@ public class Warehouse implements OrdersExchangeArea<Cargo>, SupplyingCollecting
     @Override
     public Order<Cargo> takeOrder() throws RemoteException {
         synchronized(newOrders) {
+            log.info(pier.getMaritimeCarrier().getName() + " from " + pier.getId() + " is trying to take order");
             Order<Cargo> suitable = getSuitableOrder();
 
-            while (newOrders.isEmpty() || suitable == null) {
+            while (suitable == null) {
+                if (!isSupplyingRequired())
+                    throw new NoSuitableOrder("There are no suitable order for your. Come back later");
                 try {
+                    log.info(pier.getMaritimeCarrier().getName() + " from " + pier.getId() + " is waiting for suitable order");
                     newOrders.wait();
                 } catch (InterruptedException e) {
                     // suppress
@@ -122,8 +141,10 @@ public class Warehouse implements OrdersExchangeArea<Cargo>, SupplyingCollecting
                 }
                 suitable = getSuitableOrder();
             }
+
             newOrders.remove(suitable);
             newOrders.notifyAll();
+            log.info(pier.getMaritimeCarrier().getName() + " from " + pier.getId() + " took order");
             return suitable;
         }
     }
@@ -133,6 +154,9 @@ public class Warehouse implements OrdersExchangeArea<Cargo>, SupplyingCollecting
      * @return suitable, to the currently moored carrier, order; null if no suitable
      */
     private Order<Cargo> getSuitableOrder() throws RemoteException {
+        if (newOrders.isEmpty())
+            return null;
+
         final MaritimeCarrier<Cargo> maritimeCarrier = pier.getMaritimeCarrier();
         final Amount<Mass> carrying = maritimeCarrier.getCarrying();
         final Amount<Volume> volume = maritimeCarrier.getVolume();
@@ -179,20 +203,22 @@ public class Warehouse implements OrdersExchangeArea<Cargo>, SupplyingCollecting
     @Override
     public void supply(Order<Cargo> order)
             throws CapacityViolationException {
-        final TransportContract<Client, Carrier<Cargo>, Cargo> contract = order.getContract();
+        synchronized (newOrders) {
+            final TransportContract<Client, Carrier<Cargo>, Cargo> contract = order.getContract();
 
-        if (contract.getTotalItems() > capacity)
-            throw new CapacityViolationException("Warehouse is unable to place production");
-        synchronized(newOrders) {
-            while (contract.getTotalItems() > capacity - nowStore.get())
-                try {
-                    newOrders.wait();
-                } catch (InterruptedException e) {
-                    // suppress
-                    e.printStackTrace();
-                }
-            newOrders.add(order);
-            newOrders.notifyAll();
+            if (contract.getTotalItems() > capacity)
+                throw new CapacityViolationException("Warehouse is unable to place production");
+            synchronized (newOrders) {
+                while (contract.getTotalItems() > capacity - nowStore.get())
+                    try {
+                        newOrders.wait();
+                    } catch (InterruptedException e) {
+                        // suppress
+                        e.printStackTrace();
+                    }
+                newOrders.add(order);
+                newOrders.notifyAll();
+            }
         }
     }
 
@@ -202,16 +228,14 @@ public class Warehouse implements OrdersExchangeArea<Cargo>, SupplyingCollecting
      */
     @Override
     public boolean isSupplyingRequired() {
-        return newOrders.isEmpty();
+        return newOrders.isEmpty() || (capacity / nowStore.get() >= 2);
     }
 
     @Override
     public String toString() {
-        return "Warehouse {" +
-                "capacity = " + capacity +
-                ", now storing = " + nowStore.get() +
-                ", number of new orders = " + newOrders.size() +
-                ", number of completed = " + completedOrders.size() +
-                '}';
+        return  "\n\t\tCapacity: " + capacity +
+                "\n\t\tNow storing: " + nowStore.get() +
+                "\n\t\tNumber of new orders: " + newOrders.size() +
+                "\n\t\tNumber of completed: " + completedOrders.size();
     }
 }

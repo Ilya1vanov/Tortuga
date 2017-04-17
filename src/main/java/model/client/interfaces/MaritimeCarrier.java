@@ -5,6 +5,7 @@ import model.server.interfaces.parties.Carrier;
 import model.server.interfaces.production.Transportable;
 import model.server.pdcsystem.contracts.Importance;
 import model.server.pdcsystem.order.Order;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.Serializable;
 import java.rmi.Remote;
@@ -16,6 +17,9 @@ import java.rmi.RemoteException;
  * @author Ilya Ivanov
  */
 public interface MaritimeCarrier<I extends Transportable> extends Carrier<I>, Assessable, Remote {
+    /** @return name of carrier */
+    default String getName() throws RemoteException { throw new NotImplementedException(); }
+
     /**
      * Compare carriers first by importance of transporting production, then by rating.
      * @return same as in {@link Comparable} interface

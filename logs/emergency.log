@@ -1,4 +1,258 @@
-20:22:10,370 FATAL main Client:afterUnmarshal:83 - Client failed on start!
+20:32:11,651 ERROR pool-1-thread-3 Ship:run:238 - Connection with server was lost
+java.rmi.ConnectException: Connection refused to host: 192.168.0.100; nested exception is: 
+	java.net.ConnectException: Connection refused: connect
+	at sun.rmi.transport.tcp.TCPEndpoint.newSocket(TCPEndpoint.java:619)
+	at sun.rmi.transport.tcp.TCPChannel.createConnection(TCPChannel.java:216)
+	at sun.rmi.transport.tcp.TCPChannel.newConnection(TCPChannel.java:202)
+	at sun.rmi.server.UnicastRef.invoke(UnicastRef.java:130)
+	at java.rmi.server.RemoteObjectInvocationHandler.invokeRemoteMethod(RemoteObjectInvocationHandler.java:227)
+	at java.rmi.server.RemoteObjectInvocationHandler.invoke(RemoteObjectInvocationHandler.java:179)
+	at com.sun.proxy.$Proxy5.moor(Unknown Source)
+	at model.client.ship.Ship.run(Ship.java:206)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.net.DualStackPlainSocketImpl.connect0(Native Method)
+	at java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:79)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188)
+	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:172)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:589)
+	at java.net.Socket.connect(Socket.java:538)
+	at java.net.Socket.<init>(Socket.java:434)
+	at java.net.Socket.<init>(Socket.java:211)
+	at sun.rmi.transport.proxy.RMIDirectSocketFactory.createSocket(RMIDirectSocketFactory.java:40)
+	at sun.rmi.transport.proxy.RMIMasterSocketFactory.createSocket(RMIMasterSocketFactory.java:148)
+	at sun.rmi.transport.tcp.TCPEndpoint.newSocket(TCPEndpoint.java:613)
+	... 12 more
+20:32:11,656 ERROR pool-1-thread-2 Ship:run:238 - Connection with server was lost
+java.rmi.ConnectException: Connection refused to host: 192.168.0.100; nested exception is: 
+	java.net.ConnectException: Connection refused: connect
+	at sun.rmi.transport.tcp.TCPEndpoint.newSocket(TCPEndpoint.java:619)
+	at sun.rmi.transport.tcp.TCPChannel.createConnection(TCPChannel.java:216)
+	at sun.rmi.transport.tcp.TCPChannel.newConnection(TCPChannel.java:202)
+	at sun.rmi.server.UnicastRef.invoke(UnicastRef.java:130)
+	at java.rmi.server.RemoteObjectInvocationHandler.invokeRemoteMethod(RemoteObjectInvocationHandler.java:227)
+	at java.rmi.server.RemoteObjectInvocationHandler.invoke(RemoteObjectInvocationHandler.java:179)
+	at com.sun.proxy.$Proxy5.moor(Unknown Source)
+	at model.client.ship.Ship.run(Ship.java:206)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.net.DualStackPlainSocketImpl.connect0(Native Method)
+	at java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:79)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188)
+	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:172)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:589)
+	at java.net.Socket.connect(Socket.java:538)
+	at java.net.Socket.<init>(Socket.java:434)
+	at java.net.Socket.<init>(Socket.java:211)
+	at sun.rmi.transport.proxy.RMIDirectSocketFactory.createSocket(RMIDirectSocketFactory.java:40)
+	at sun.rmi.transport.proxy.RMIMasterSocketFactory.createSocket(RMIMasterSocketFactory.java:148)
+	at sun.rmi.transport.tcp.TCPEndpoint.newSocket(TCPEndpoint.java:613)
+	... 12 more
+20:33:07,188 FATAL RMI TCP Connection(3)-192.168.0.100 Port:unmoor:151 - More than one threads where created on one connection
+20:33:15,400 ERROR pool-1-thread-3 Ship:run:238 - Connection with server was lost
+java.rmi.ConnectException: Connection refused to host: 192.168.0.100; nested exception is: 
+	java.net.ConnectException: Connection refused: connect
+	at sun.rmi.transport.tcp.TCPEndpoint.newSocket(TCPEndpoint.java:619)
+	at sun.rmi.transport.tcp.TCPChannel.createConnection(TCPChannel.java:216)
+	at sun.rmi.transport.tcp.TCPChannel.newConnection(TCPChannel.java:202)
+	at sun.rmi.server.UnicastRef.invoke(UnicastRef.java:130)
+	at java.rmi.server.RemoteObjectInvocationHandler.invokeRemoteMethod(RemoteObjectInvocationHandler.java:227)
+	at java.rmi.server.RemoteObjectInvocationHandler.invoke(RemoteObjectInvocationHandler.java:179)
+	at com.sun.proxy.$Proxy5.moor(Unknown Source)
+	at model.client.ship.Ship.run(Ship.java:206)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.net.DualStackPlainSocketImpl.connect0(Native Method)
+	at java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:79)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188)
+	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:172)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:589)
+	at java.net.Socket.connect(Socket.java:538)
+	at java.net.Socket.<init>(Socket.java:434)
+	at java.net.Socket.<init>(Socket.java:211)
+	at sun.rmi.transport.proxy.RMIDirectSocketFactory.createSocket(RMIDirectSocketFactory.java:40)
+	at sun.rmi.transport.proxy.RMIMasterSocketFactory.createSocket(RMIMasterSocketFactory.java:148)
+	at sun.rmi.transport.tcp.TCPEndpoint.newSocket(TCPEndpoint.java:613)
+	... 12 more
+20:33:15,400 ERROR pool-1-thread-2 Ship:run:238 - Connection with server was lost
+java.rmi.ConnectException: Connection refused to host: 192.168.0.100; nested exception is: 
+	java.net.ConnectException: Connection refused: connect
+	at sun.rmi.transport.tcp.TCPEndpoint.newSocket(TCPEndpoint.java:619)
+	at sun.rmi.transport.tcp.TCPChannel.createConnection(TCPChannel.java:216)
+	at sun.rmi.transport.tcp.TCPChannel.newConnection(TCPChannel.java:202)
+	at sun.rmi.server.UnicastRef.invoke(UnicastRef.java:130)
+	at java.rmi.server.RemoteObjectInvocationHandler.invokeRemoteMethod(RemoteObjectInvocationHandler.java:227)
+	at java.rmi.server.RemoteObjectInvocationHandler.invoke(RemoteObjectInvocationHandler.java:179)
+	at com.sun.proxy.$Proxy5.moor(Unknown Source)
+	at model.client.ship.Ship.run(Ship.java:206)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.net.DualStackPlainSocketImpl.connect0(Native Method)
+	at java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:79)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188)
+	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:172)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:589)
+	at java.net.Socket.connect(Socket.java:538)
+	at java.net.Socket.<init>(Socket.java:434)
+	at java.net.Socket.<init>(Socket.java:211)
+	at sun.rmi.transport.proxy.RMIDirectSocketFactory.createSocket(RMIDirectSocketFactory.java:40)
+	at sun.rmi.transport.proxy.RMIMasterSocketFactory.createSocket(RMIMasterSocketFactory.java:148)
+	at sun.rmi.transport.tcp.TCPEndpoint.newSocket(TCPEndpoint.java:613)
+	... 12 more
+10:08:05,599 FATAL main Port:unmoor:146 - More than one threads where created on one connection
+10:25:51,057 FATAL main Port:unmoor:146 - More than one threads where created on one connection
+10:47:29,937 FATAL main Port:unmoor:146 - More than one threads where created on one connection
+10:47:40,257 FATAL main Port:unmoor:146 - More than one threads where created on one connection
+10:47:55,927 FATAL main Port:unmoor:146 - More than one threads where created on one connection
+10:49:07,141 FATAL main Port:unmoor:146 - More than one threads where created on one connection
+11:11:45,038 FATAL main Port:unmoor:146 - More than one threads where created on one connection
+11:12:50,099 FATAL main Port:unmoor:146 - More than one threads where created on one connection
+11:14:04,787 FATAL main Port:unmoor:146 - More than one threads where created on one connection
+11:15:21,652 FATAL main Port:unmoor:146 - More than one threads where created on one connection
+11:18:16,588 FATAL main Port:unmoor:146 - More than one threads where created on one connection
+13:07:34,485 FATAL RMI TCP Connection(4)-192.168.0.100 Port:unmoor:146 - More than one threads where created on one connection
+13:26:15,790 FATAL RMI TCP Connection(5)-192.168.0.100 Port:unmoor:146 - More than one threads where created on one connection
+13:26:50,807 ERROR pool-1-thread-4 Ship:run:253 - Connection with server was lost
+java.rmi.ConnectException: Connection refused to host: 192.168.0.100; nested exception is: 
+	java.net.ConnectException: Connection refused: connect
+	at sun.rmi.transport.tcp.TCPEndpoint.newSocket(TCPEndpoint.java:619)
+	at sun.rmi.transport.tcp.TCPChannel.createConnection(TCPChannel.java:216)
+	at sun.rmi.transport.tcp.TCPChannel.newConnection(TCPChannel.java:202)
+	at sun.rmi.server.UnicastRef.invoke(UnicastRef.java:130)
+	at java.rmi.server.RemoteObjectInvocationHandler.invokeRemoteMethod(RemoteObjectInvocationHandler.java:227)
+	at java.rmi.server.RemoteObjectInvocationHandler.invoke(RemoteObjectInvocationHandler.java:179)
+	at com.sun.proxy.$Proxy6.moor(Unknown Source)
+	at model.client.ship.Ship.run(Ship.java:212)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.net.DualStackPlainSocketImpl.connect0(Native Method)
+	at java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:79)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188)
+	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:172)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:589)
+	at java.net.Socket.connect(Socket.java:538)
+	at java.net.Socket.<init>(Socket.java:434)
+	at java.net.Socket.<init>(Socket.java:211)
+	at sun.rmi.transport.proxy.RMIDirectSocketFactory.createSocket(RMIDirectSocketFactory.java:40)
+	at sun.rmi.transport.proxy.RMIMasterSocketFactory.createSocket(RMIMasterSocketFactory.java:148)
+	at sun.rmi.transport.tcp.TCPEndpoint.newSocket(TCPEndpoint.java:613)
+	... 12 more
+13:26:50,809 ERROR pool-1-thread-1 Ship:run:253 - Connection with server was lost
+java.rmi.ConnectException: Connection refused to host: 192.168.0.100; nested exception is: 
+	java.net.ConnectException: Connection refused: connect
+	at sun.rmi.transport.tcp.TCPEndpoint.newSocket(TCPEndpoint.java:619)
+	at sun.rmi.transport.tcp.TCPChannel.createConnection(TCPChannel.java:216)
+	at sun.rmi.transport.tcp.TCPChannel.newConnection(TCPChannel.java:202)
+	at sun.rmi.server.UnicastRef.invoke(UnicastRef.java:130)
+	at java.rmi.server.RemoteObjectInvocationHandler.invokeRemoteMethod(RemoteObjectInvocationHandler.java:227)
+	at java.rmi.server.RemoteObjectInvocationHandler.invoke(RemoteObjectInvocationHandler.java:179)
+	at com.sun.proxy.$Proxy6.moor(Unknown Source)
+	at model.client.ship.Ship.run(Ship.java:212)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.net.DualStackPlainSocketImpl.connect0(Native Method)
+	at java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:79)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188)
+	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:172)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:589)
+	at java.net.Socket.connect(Socket.java:538)
+	at java.net.Socket.<init>(Socket.java:434)
+	at java.net.Socket.<init>(Socket.java:211)
+	at sun.rmi.transport.proxy.RMIDirectSocketFactory.createSocket(RMIDirectSocketFactory.java:40)
+	at sun.rmi.transport.proxy.RMIMasterSocketFactory.createSocket(RMIMasterSocketFactory.java:148)
+	at sun.rmi.transport.tcp.TCPEndpoint.newSocket(TCPEndpoint.java:613)
+	... 12 more
+13:26:50,807 ERROR pool-1-thread-2 Ship:run:253 - Connection with server was lost
+java.rmi.ConnectException: Connection refused to host: 192.168.0.100; nested exception is: 
+	java.net.ConnectException: Connection refused: connect
+	at sun.rmi.transport.tcp.TCPEndpoint.newSocket(TCPEndpoint.java:619)
+	at sun.rmi.transport.tcp.TCPChannel.createConnection(TCPChannel.java:216)
+	at sun.rmi.transport.tcp.TCPChannel.newConnection(TCPChannel.java:202)
+	at sun.rmi.server.UnicastRef.invoke(UnicastRef.java:130)
+	at java.rmi.server.RemoteObjectInvocationHandler.invokeRemoteMethod(RemoteObjectInvocationHandler.java:227)
+	at java.rmi.server.RemoteObjectInvocationHandler.invoke(RemoteObjectInvocationHandler.java:179)
+	at com.sun.proxy.$Proxy6.moor(Unknown Source)
+	at model.client.ship.Ship.run(Ship.java:212)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:745)
+Caused by: java.net.ConnectException: Connection refused: connect
+	at java.net.DualStackPlainSocketImpl.connect0(Native Method)
+	at java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:79)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188)
+	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:172)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:589)
+	at java.net.Socket.connect(Socket.java:538)
+	at java.net.Socket.<init>(Socket.java:434)
+	at java.net.Socket.<init>(Socket.java:211)
+	at sun.rmi.transport.proxy.RMIDirectSocketFactory.createSocket(RMIDirectSocketFactory.java:40)
+	at sun.rmi.transport.proxy.RMIMasterSocketFactory.createSocket(RMIMasterSocketFactory.java:148)
+	at sun.rmi.transport.tcp.TCPEndpoint.newSocket(TCPEndpoint.java:613)
+	... 12 more
+13:31:56,689 ERROR pool-1-thread-4 Ship:run:253 - Connection with server was lost
+13:31:56,740 ERROR pool-1-thread-3 Ship:run:253 - Connection with server was lost
+13:31:56,742 ERROR pool-1-thread-2 Ship:run:253 - Connection with server was lost
+13:31:56,743 ERROR pool-1-thread-1 Ship:run:253 - Connection with server was lost
+13:35:14,351 ERROR pool-1-thread-2 Ship:run:253 - Connection with server was lost
+13:35:14,351 ERROR pool-1-thread-3 Ship:run:253 - Connection with server was lost
+13:35:14,351 ERROR pool-1-thread-1 Ship:run:253 - Connection with server was lost
+13:35:14,354 ERROR pool-1-thread-4 Ship:run:253 - Connection with server was lost
+13:37:02,547 ERROR pool-1-thread-3 Ship:run:254 - Connection with server was lost
+13:37:02,547 ERROR pool-1-thread-1 Ship:run:254 - Connection with server was lost
+13:37:02,586 ERROR pool-1-thread-2 Ship:run:254 - Connection with server was lost
+13:37:03,556 ERROR pool-1-thread-4 Ship:run:254 - Connection with server was lost
+13:40:33,612 FATAL RMI TCP Connection(4)-192.168.0.100 Port:unmoor:146 - More than one threads where created on one connection
+13:40:40,508 ERROR pool-1-thread-4 Ship:run:254 - Connection with server was lost
+13:40:40,508 ERROR pool-1-thread-1 Ship:run:254 - Connection with server was lost
+13:40:40,531 ERROR pool-1-thread-2 Ship:run:254 - Connection with server was lost
+13:43:12,808 FATAL main Client:run:117 - Client server failed while starting
 java.rmi.ConnectException: Connection refused to host: 192.168.0.100; nested exception is: 
 	java.net.ConnectException: Connection refused: connect
 	at sun.rmi.transport.tcp.TCPEndpoint.newSocket(TCPEndpoint.java:619)
@@ -6,36 +260,9 @@ java.rmi.ConnectException: Connection refused to host: 192.168.0.100; nested exc
 	at sun.rmi.transport.tcp.TCPChannel.newConnection(TCPChannel.java:202)
 	at sun.rmi.server.UnicastRef.newCall(UnicastRef.java:342)
 	at sun.rmi.registry.RegistryImpl_Stub.lookup(Unknown Source)
-	at model.client.Client.importRemote(Client.java:95)
-	at model.client.Client.afterUnmarshal(Client.java:81)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at com.sun.xml.internal.bind.v2.runtime.JaxBeanInfo.invokeUnmarshallCallback(JaxBeanInfo.java:541)
-	at com.sun.xml.internal.bind.v2.runtime.JaxBeanInfo.invokeAfterUnmarshalMethod(JaxBeanInfo.java:536)
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.Loader.fireAfterUnmarshal(Loader.java:218)
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.StructureLoader.leaveElement(StructureLoader.java:265)
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.UnmarshallingContext.endElement(UnmarshallingContext.java:585)
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.SAXConnector.endElement(SAXConnector.java:165)
-	at com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.endElement(AbstractSAXParser.java:609)
-	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.scanEndElement(XMLDocumentFragmentScannerImpl.java:1782)
-	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl$FragmentContentDriver.next(XMLDocumentFragmentScannerImpl.java:2967)
-	at com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl.next(XMLDocumentScannerImpl.java:602)
-	at com.sun.org.apache.xerces.internal.impl.XMLNSDocumentScannerImpl.next(XMLNSDocumentScannerImpl.java:112)
-	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.scanDocument(XMLDocumentFragmentScannerImpl.java:505)
-	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(XML11Configuration.java:841)
-	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(XML11Configuration.java:770)
-	at com.sun.org.apache.xerces.internal.parsers.XMLParser.parse(XMLParser.java:141)
-	at com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.parse(AbstractSAXParser.java:1213)
-	at com.sun.org.apache.xerces.internal.jaxp.SAXParserImpl$JAXPSAXParser.parse(SAXParserImpl.java:643)
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.UnmarshallerImpl.unmarshal0(UnmarshallerImpl.java:243)
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.UnmarshallerImpl.unmarshal(UnmarshallerImpl.java:214)
-	at javax.xml.bind.helpers.AbstractUnmarshallerImpl.unmarshal(AbstractUnmarshallerImpl.java:157)
-	at javax.xml.bind.helpers.AbstractUnmarshallerImpl.unmarshal(AbstractUnmarshallerImpl.java:162)
-	at javax.xml.bind.helpers.AbstractUnmarshallerImpl.unmarshal(AbstractUnmarshallerImpl.java:171)
-	at javax.xml.bind.helpers.AbstractUnmarshallerImpl.unmarshal(AbstractUnmarshallerImpl.java:189)
-	at model.client.Client.main(Client.java:134)
+	at model.client.Client.importRemote(Client.java:96)
+	at model.client.Client.run(Client.java:112)
+	at model.client.Client.main(Client.java:159)
 Caused by: java.net.ConnectException: Connection refused: connect
 	at java.net.DualStackPlainSocketImpl.connect0(Native Method)
 	at java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:79)
@@ -51,74 +278,78 @@ Caused by: java.net.ConnectException: Connection refused: connect
 	at sun.rmi.transport.proxy.RMIDirectSocketFactory.createSocket(RMIDirectSocketFactory.java:40)
 	at sun.rmi.transport.proxy.RMIMasterSocketFactory.createSocket(RMIMasterSocketFactory.java:148)
 	at sun.rmi.transport.tcp.TCPEndpoint.newSocket(TCPEndpoint.java:613)
-	... 34 more
-20:22:10,394 FATAL main Client:main:136 - Unable to instantiate client
-javax.xml.bind.UnmarshalException
- - with linked exception:
-[java.lang.reflect.InvocationTargetException]
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.UnmarshallingContext.handleEvent(UnmarshallingContext.java:726)
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.UnmarshallingContext.handleError(UnmarshallingContext.java:753)
-	at com.sun.xml.internal.bind.v2.runtime.JaxBeanInfo.invokeUnmarshallCallback(JaxBeanInfo.java:545)
-	at com.sun.xml.internal.bind.v2.runtime.JaxBeanInfo.invokeAfterUnmarshalMethod(JaxBeanInfo.java:536)
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.Loader.fireAfterUnmarshal(Loader.java:218)
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.StructureLoader.leaveElement(StructureLoader.java:265)
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.UnmarshallingContext.endElement(UnmarshallingContext.java:585)
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.SAXConnector.endElement(SAXConnector.java:165)
-	at com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.endElement(AbstractSAXParser.java:609)
-	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.scanEndElement(XMLDocumentFragmentScannerImpl.java:1782)
-	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl$FragmentContentDriver.next(XMLDocumentFragmentScannerImpl.java:2967)
-	at com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl.next(XMLDocumentScannerImpl.java:602)
-	at com.sun.org.apache.xerces.internal.impl.XMLNSDocumentScannerImpl.next(XMLNSDocumentScannerImpl.java:112)
-	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.scanDocument(XMLDocumentFragmentScannerImpl.java:505)
-	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(XML11Configuration.java:841)
-	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(XML11Configuration.java:770)
-	at com.sun.org.apache.xerces.internal.parsers.XMLParser.parse(XMLParser.java:141)
-	at com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.parse(AbstractSAXParser.java:1213)
-	at com.sun.org.apache.xerces.internal.jaxp.SAXParserImpl$JAXPSAXParser.parse(SAXParserImpl.java:643)
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.UnmarshallerImpl.unmarshal0(UnmarshallerImpl.java:243)
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.UnmarshallerImpl.unmarshal(UnmarshallerImpl.java:214)
-	at javax.xml.bind.helpers.AbstractUnmarshallerImpl.unmarshal(AbstractUnmarshallerImpl.java:157)
-	at javax.xml.bind.helpers.AbstractUnmarshallerImpl.unmarshal(AbstractUnmarshallerImpl.java:162)
-	at javax.xml.bind.helpers.AbstractUnmarshallerImpl.unmarshal(AbstractUnmarshallerImpl.java:171)
-	at javax.xml.bind.helpers.AbstractUnmarshallerImpl.unmarshal(AbstractUnmarshallerImpl.java:189)
-	at model.client.Client.main(Client.java:134)
-Caused by: java.lang.reflect.InvocationTargetException
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at com.sun.xml.internal.bind.v2.runtime.JaxBeanInfo.invokeUnmarshallCallback(JaxBeanInfo.java:541)
-	... 23 more
-Caused by: java.lang.RuntimeException: Client failed on start
-	at model.client.Client.afterUnmarshal(Client.java:84)
-	... 28 more
-Caused by: java.rmi.ConnectException: Connection refused to host: 192.168.0.100; nested exception is: 
-	java.net.ConnectException: Connection refused: connect
-	at sun.rmi.transport.tcp.TCPEndpoint.newSocket(TCPEndpoint.java:619)
-	at sun.rmi.transport.tcp.TCPChannel.createConnection(TCPChannel.java:216)
-	at sun.rmi.transport.tcp.TCPChannel.newConnection(TCPChannel.java:202)
-	at sun.rmi.server.UnicastRef.newCall(UnicastRef.java:342)
-	at sun.rmi.registry.RegistryImpl_Stub.lookup(Unknown Source)
-	at model.client.Client.importRemote(Client.java:95)
-	at model.client.Client.afterUnmarshal(Client.java:81)
-	... 28 more
-Caused by: java.net.ConnectException: Connection refused: connect
-	at java.net.DualStackPlainSocketImpl.connect0(Native Method)
-	at java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:79)
-	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)
-	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206)
-	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188)
-	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:172)
-	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
-	at java.net.Socket.connect(Socket.java:589)
-	at java.net.Socket.connect(Socket.java:538)
-	at java.net.Socket.<init>(Socket.java:434)
-	at java.net.Socket.<init>(Socket.java:211)
-	at sun.rmi.transport.proxy.RMIDirectSocketFactory.createSocket(RMIDirectSocketFactory.java:40)
-	at sun.rmi.transport.proxy.RMIMasterSocketFactory.createSocket(RMIMasterSocketFactory.java:148)
-	at sun.rmi.transport.tcp.TCPEndpoint.newSocket(TCPEndpoint.java:613)
-	... 34 more
-21:46:39,351 FATAL main Server:main:174 - Unable to instantiate server
+	... 7 more
+13:43:35,843 ERROR pool-1-thread-4 Ship:run:254 - Connection with server was lost
+13:43:35,843 ERROR pool-1-thread-2 Ship:run:257 - Thread was interrupted by the client
+13:43:35,843 ERROR pool-1-thread-1 Ship:run:257 - Thread was interrupted by the client
+13:43:35,843 ERROR pool-1-thread-3 Ship:run:257 - Thread was interrupted by the client
+14:57:38,095 FATAL main Server:main:176 - Unable to instantiate server
+java.rmi.server.ExportException: object already exported
+	at sun.rmi.transport.ObjectTable.putTarget(ObjectTable.java:189)
+	at sun.rmi.transport.Transport.exportObject(Transport.java:106)
+	at sun.rmi.transport.tcp.TCPTransport.exportObject(TCPTransport.java:260)
+	at sun.rmi.transport.tcp.TCPEndpoint.exportObject(TCPEndpoint.java:411)
+	at sun.rmi.transport.LiveRef.exportObject(LiveRef.java:147)
+	at sun.rmi.server.UnicastServerRef.exportObject(UnicastServerRef.java:234)
+	at java.rmi.server.UnicastRemoteObject.exportObject(UnicastRemoteObject.java:383)
+	at java.rmi.server.UnicastRemoteObject.exportObject(UnicastRemoteObject.java:320)
+	at model.server.portsystem.RemoteClass.exportRemote(RemoteClass.java:30)
+	at model.server.portsystem.RemoteClass.exportRemote(RemoteClass.java:32)
+	at model.server.Server.exportRemote(Server.java:113)
+	at model.server.Server.main(Server.java:174)
+15:01:47,407 FATAL main Server:main:176 - Unable to instantiate server
+java.rmi.server.ExportException: object already exported
+	at sun.rmi.transport.ObjectTable.putTarget(ObjectTable.java:189)
+	at sun.rmi.transport.Transport.exportObject(Transport.java:106)
+	at sun.rmi.transport.tcp.TCPTransport.exportObject(TCPTransport.java:260)
+	at sun.rmi.transport.tcp.TCPEndpoint.exportObject(TCPEndpoint.java:411)
+	at sun.rmi.transport.LiveRef.exportObject(LiveRef.java:147)
+	at sun.rmi.server.UnicastServerRef.exportObject(UnicastServerRef.java:234)
+	at java.rmi.server.UnicastRemoteObject.exportObject(UnicastRemoteObject.java:383)
+	at java.rmi.server.UnicastRemoteObject.exportObject(UnicastRemoteObject.java:320)
+	at model.server.portsystem.RemoteClass.exportRemote(RemoteClass.java:30)
+	at model.server.portsystem.RemoteClass.exportRemote(RemoteClass.java:32)
+	at model.server.Server.exportRemote(Server.java:113)
+	at model.server.Server.main(Server.java:174)
+15:03:44,890 FATAL main Server:main:176 - Unable to instantiate server
+java.rmi.server.ExportException: object already exported
+	at sun.rmi.transport.ObjectTable.putTarget(ObjectTable.java:189)
+	at sun.rmi.transport.Transport.exportObject(Transport.java:106)
+	at sun.rmi.transport.tcp.TCPTransport.exportObject(TCPTransport.java:260)
+	at sun.rmi.transport.tcp.TCPEndpoint.exportObject(TCPEndpoint.java:411)
+	at sun.rmi.transport.LiveRef.exportObject(LiveRef.java:147)
+	at sun.rmi.server.UnicastServerRef.exportObject(UnicastServerRef.java:234)
+	at java.rmi.server.UnicastRemoteObject.exportObject(UnicastRemoteObject.java:383)
+	at java.rmi.server.UnicastRemoteObject.exportObject(UnicastRemoteObject.java:320)
+	at model.server.portsystem.RemoteClass.exportRemote(RemoteClass.java:30)
+	at model.server.portsystem.RemoteClass.exportRemote(RemoteClass.java:32)
+	at model.server.Server.exportRemote(Server.java:113)
+	at model.server.Server.main(Server.java:174)
+15:20:20,481 ERROR pool-1-thread-1 Ship:run:258 - Connection with server was lost
+15:20:20,481 ERROR pool-1-thread-3 Ship:run:258 - Connection with server was lost
+15:20:20,563 ERROR pool-1-thread-4 Ship:run:258 - Connection with server was lost
+15:20:20,563 ERROR pool-1-thread-2 Ship:run:258 - Connection with server was lost
+16:36:57,215 ERROR main Ship:run:247 - Connection to the server is lost
+16:37:54,728 ERROR main Ship:run:247 - Connection to the server is lost
+16:40:44,612 ERROR main Ship:run:248 - Connection to the server is lost
+16:41:07,184 ERROR main Ship:run:248 - Connection to the server is lost
+16:41:57,356 ERROR main Ship:run:249 - Connection to the server is lost
+16:43:06,720 ERROR main Ship:run:249 - Connection to the server is lost
+16:43:34,233 ERROR main Ship:run:249 - Connection to the server is lost
+16:43:49,028 ERROR main Ship:run:249 - Connection to the server is lost
+16:44:58,606 ERROR main Ship:run:249 - Connection to the server is lost
+16:45:26,935 ERROR main Ship:run:249 - Connection to the server is lost
+16:45:58,529 ERROR main Ship:run:249 - Connection to the server is lost
+16:46:26,213 ERROR main Ship:run:249 - Connection to the server is lost
+16:46:31,386 ERROR main Ship:run:249 - Connection to the server is lost
+16:48:12,254 ERROR main Ship:run:249 - Connection to the server is lost
+16:53:19,597 ERROR main Ship:run:249 - Connection to the server is lost
+16:53:58,901 ERROR main Ship:run:249 - Connection to the server is lost
+16:54:10,188 ERROR main Ship:run:249 - Connection to the server is lost
+16:54:14,534 ERROR main Ship:run:249 - Connection to the server is lost
+16:55:42,061 ERROR main Ship:run:249 - Connection to the server is lost
+16:56:03,299 ERROR main Ship:run:249 - Connection to the server is lost
+20:48:33,735 FATAL main Server:main:181 - Unable to instantiate server
 java.rmi.server.ExportException: Port already in use: 2002; nested exception is: 
 	java.net.BindException: Address already in use: JVM_Bind
 	at sun.rmi.transport.tcp.TCPTransport.listen(TCPTransport.java:341)
@@ -129,8 +360,8 @@ java.rmi.server.ExportException: Port already in use: 2002; nested exception is:
 	at sun.rmi.registry.RegistryImpl.setup(RegistryImpl.java:195)
 	at sun.rmi.registry.RegistryImpl.<init>(RegistryImpl.java:180)
 	at java.rmi.registry.LocateRegistry.createRegistry(LocateRegistry.java:203)
-	at model.server.Server.exportRemote(Server.java:112)
-	at model.server.Server.main(Server.java:172)
+	at model.server.Server.exportRemote(Server.java:115)
+	at model.server.Server.main(Server.java:179)
 Caused by: java.net.BindException: Address already in use: JVM_Bind
 	at java.net.DualStackPlainSocketImpl.bind0(Native Method)
 	at java.net.DualStackPlainSocketImpl.socketBind(DualStackPlainSocketImpl.java:106)
@@ -144,226 +375,33 @@ Caused by: java.net.BindException: Address already in use: JVM_Bind
 	at sun.rmi.transport.tcp.TCPEndpoint.newServerSocket(TCPEndpoint.java:666)
 	at sun.rmi.transport.tcp.TCPTransport.listen(TCPTransport.java:330)
 	... 9 more
-21:46:49,915 FATAL main Client:afterUnmarshal:83 - Client failed on start!
-java.rmi.ConnectException: Connection refused to host: 192.168.0.100; nested exception is: 
-	java.net.ConnectException: Connection refused: connect
-	at sun.rmi.transport.tcp.TCPEndpoint.newSocket(TCPEndpoint.java:619)
-	at sun.rmi.transport.tcp.TCPChannel.createConnection(TCPChannel.java:216)
-	at sun.rmi.transport.tcp.TCPChannel.newConnection(TCPChannel.java:202)
-	at sun.rmi.server.UnicastRef.newCall(UnicastRef.java:342)
-	at sun.rmi.registry.RegistryImpl_Stub.lookup(Unknown Source)
-	at model.client.Client.importRemote(Client.java:95)
-	at model.client.Client.afterUnmarshal(Client.java:81)
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at com.sun.xml.internal.bind.v2.runtime.JaxBeanInfo.invokeUnmarshallCallback(JaxBeanInfo.java:541)
-	at com.sun.xml.internal.bind.v2.runtime.JaxBeanInfo.invokeAfterUnmarshalMethod(JaxBeanInfo.java:536)
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.Loader.fireAfterUnmarshal(Loader.java:218)
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.StructureLoader.leaveElement(StructureLoader.java:265)
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.UnmarshallingContext.endElement(UnmarshallingContext.java:585)
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.SAXConnector.endElement(SAXConnector.java:165)
-	at com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.endElement(AbstractSAXParser.java:609)
-	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.scanEndElement(XMLDocumentFragmentScannerImpl.java:1782)
-	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl$FragmentContentDriver.next(XMLDocumentFragmentScannerImpl.java:2967)
-	at com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl.next(XMLDocumentScannerImpl.java:602)
-	at com.sun.org.apache.xerces.internal.impl.XMLNSDocumentScannerImpl.next(XMLNSDocumentScannerImpl.java:112)
-	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.scanDocument(XMLDocumentFragmentScannerImpl.java:505)
-	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(XML11Configuration.java:841)
-	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(XML11Configuration.java:770)
-	at com.sun.org.apache.xerces.internal.parsers.XMLParser.parse(XMLParser.java:141)
-	at com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.parse(AbstractSAXParser.java:1213)
-	at com.sun.org.apache.xerces.internal.jaxp.SAXParserImpl$JAXPSAXParser.parse(SAXParserImpl.java:643)
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.UnmarshallerImpl.unmarshal0(UnmarshallerImpl.java:243)
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.UnmarshallerImpl.unmarshal(UnmarshallerImpl.java:214)
-	at javax.xml.bind.helpers.AbstractUnmarshallerImpl.unmarshal(AbstractUnmarshallerImpl.java:157)
-	at javax.xml.bind.helpers.AbstractUnmarshallerImpl.unmarshal(AbstractUnmarshallerImpl.java:162)
-	at javax.xml.bind.helpers.AbstractUnmarshallerImpl.unmarshal(AbstractUnmarshallerImpl.java:171)
-	at javax.xml.bind.helpers.AbstractUnmarshallerImpl.unmarshal(AbstractUnmarshallerImpl.java:189)
-	at model.client.Client.main(Client.java:134)
-Caused by: java.net.ConnectException: Connection refused: connect
-	at java.net.DualStackPlainSocketImpl.connect0(Native Method)
-	at java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:79)
-	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)
-	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206)
-	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188)
-	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:172)
-	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
-	at java.net.Socket.connect(Socket.java:589)
-	at java.net.Socket.connect(Socket.java:538)
-	at java.net.Socket.<init>(Socket.java:434)
-	at java.net.Socket.<init>(Socket.java:211)
-	at sun.rmi.transport.proxy.RMIDirectSocketFactory.createSocket(RMIDirectSocketFactory.java:40)
-	at sun.rmi.transport.proxy.RMIMasterSocketFactory.createSocket(RMIMasterSocketFactory.java:148)
-	at sun.rmi.transport.tcp.TCPEndpoint.newSocket(TCPEndpoint.java:613)
-	... 34 more
-21:46:49,931 FATAL main Client:main:136 - Unable to instantiate client
-javax.xml.bind.UnmarshalException
- - with linked exception:
-[java.lang.reflect.InvocationTargetException]
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.UnmarshallingContext.handleEvent(UnmarshallingContext.java:726)
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.UnmarshallingContext.handleError(UnmarshallingContext.java:753)
-	at com.sun.xml.internal.bind.v2.runtime.JaxBeanInfo.invokeUnmarshallCallback(JaxBeanInfo.java:545)
-	at com.sun.xml.internal.bind.v2.runtime.JaxBeanInfo.invokeAfterUnmarshalMethod(JaxBeanInfo.java:536)
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.Loader.fireAfterUnmarshal(Loader.java:218)
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.StructureLoader.leaveElement(StructureLoader.java:265)
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.UnmarshallingContext.endElement(UnmarshallingContext.java:585)
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.SAXConnector.endElement(SAXConnector.java:165)
-	at com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.endElement(AbstractSAXParser.java:609)
-	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.scanEndElement(XMLDocumentFragmentScannerImpl.java:1782)
-	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl$FragmentContentDriver.next(XMLDocumentFragmentScannerImpl.java:2967)
-	at com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl.next(XMLDocumentScannerImpl.java:602)
-	at com.sun.org.apache.xerces.internal.impl.XMLNSDocumentScannerImpl.next(XMLNSDocumentScannerImpl.java:112)
-	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.scanDocument(XMLDocumentFragmentScannerImpl.java:505)
-	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(XML11Configuration.java:841)
-	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(XML11Configuration.java:770)
-	at com.sun.org.apache.xerces.internal.parsers.XMLParser.parse(XMLParser.java:141)
-	at com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.parse(AbstractSAXParser.java:1213)
-	at com.sun.org.apache.xerces.internal.jaxp.SAXParserImpl$JAXPSAXParser.parse(SAXParserImpl.java:643)
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.UnmarshallerImpl.unmarshal0(UnmarshallerImpl.java:243)
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.UnmarshallerImpl.unmarshal(UnmarshallerImpl.java:214)
-	at javax.xml.bind.helpers.AbstractUnmarshallerImpl.unmarshal(AbstractUnmarshallerImpl.java:157)
-	at javax.xml.bind.helpers.AbstractUnmarshallerImpl.unmarshal(AbstractUnmarshallerImpl.java:162)
-	at javax.xml.bind.helpers.AbstractUnmarshallerImpl.unmarshal(AbstractUnmarshallerImpl.java:171)
-	at javax.xml.bind.helpers.AbstractUnmarshallerImpl.unmarshal(AbstractUnmarshallerImpl.java:189)
-	at model.client.Client.main(Client.java:134)
-Caused by: java.lang.reflect.InvocationTargetException
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at com.sun.xml.internal.bind.v2.runtime.JaxBeanInfo.invokeUnmarshallCallback(JaxBeanInfo.java:541)
-	... 23 more
-Caused by: java.lang.RuntimeException: Client failed on start
-	at model.client.Client.afterUnmarshal(Client.java:84)
-	... 28 more
-Caused by: java.rmi.ConnectException: Connection refused to host: 192.168.0.100; nested exception is: 
-	java.net.ConnectException: Connection refused: connect
-	at sun.rmi.transport.tcp.TCPEndpoint.newSocket(TCPEndpoint.java:619)
-	at sun.rmi.transport.tcp.TCPChannel.createConnection(TCPChannel.java:216)
-	at sun.rmi.transport.tcp.TCPChannel.newConnection(TCPChannel.java:202)
-	at sun.rmi.server.UnicastRef.newCall(UnicastRef.java:342)
-	at sun.rmi.registry.RegistryImpl_Stub.lookup(Unknown Source)
-	at model.client.Client.importRemote(Client.java:95)
-	at model.client.Client.afterUnmarshal(Client.java:81)
-	... 28 more
-Caused by: java.net.ConnectException: Connection refused: connect
-	at java.net.DualStackPlainSocketImpl.connect0(Native Method)
-	at java.net.DualStackPlainSocketImpl.socketConnect(DualStackPlainSocketImpl.java:79)
-	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)
-	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206)
-	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188)
-	at java.net.PlainSocketImpl.connect(PlainSocketImpl.java:172)
-	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
-	at java.net.Socket.connect(Socket.java:589)
-	at java.net.Socket.connect(Socket.java:538)
-	at java.net.Socket.<init>(Socket.java:434)
-	at java.net.Socket.<init>(Socket.java:211)
-	at sun.rmi.transport.proxy.RMIDirectSocketFactory.createSocket(RMIDirectSocketFactory.java:40)
-	at sun.rmi.transport.proxy.RMIMasterSocketFactory.createSocket(RMIMasterSocketFactory.java:148)
-	at sun.rmi.transport.tcp.TCPEndpoint.newSocket(TCPEndpoint.java:613)
-	... 34 more
-23:14:28,063 FATAL main Server:main:174 - Unable to instantiate server
-javax.xml.bind.UnmarshalException
- - with linked exception:
-[java.lang.reflect.InvocationTargetException]
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.UnmarshallingContext.handleEvent(UnmarshallingContext.java:726)
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.UnmarshallingContext.handleError(UnmarshallingContext.java:753)
-	at com.sun.xml.internal.bind.v2.runtime.JaxBeanInfo.invokeUnmarshallCallback(JaxBeanInfo.java:545)
-	at com.sun.xml.internal.bind.v2.runtime.JaxBeanInfo.invokeAfterUnmarshalMethod(JaxBeanInfo.java:536)
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.Loader.fireAfterUnmarshal(Loader.java:218)
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.StructureLoader.leaveElement(StructureLoader.java:265)
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.UnmarshallingContext.endElement(UnmarshallingContext.java:585)
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.SAXConnector.endElement(SAXConnector.java:165)
-	at com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.endElement(AbstractSAXParser.java:609)
-	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.scanEndElement(XMLDocumentFragmentScannerImpl.java:1782)
-	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl$FragmentContentDriver.next(XMLDocumentFragmentScannerImpl.java:2967)
-	at com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl.next(XMLDocumentScannerImpl.java:602)
-	at com.sun.org.apache.xerces.internal.impl.XMLNSDocumentScannerImpl.next(XMLNSDocumentScannerImpl.java:112)
-	at com.sun.org.apache.xerces.internal.impl.XMLDocumentFragmentScannerImpl.scanDocument(XMLDocumentFragmentScannerImpl.java:505)
-	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(XML11Configuration.java:841)
-	at com.sun.org.apache.xerces.internal.parsers.XML11Configuration.parse(XML11Configuration.java:770)
-	at com.sun.org.apache.xerces.internal.parsers.XMLParser.parse(XMLParser.java:141)
-	at com.sun.org.apache.xerces.internal.parsers.AbstractSAXParser.parse(AbstractSAXParser.java:1213)
-	at com.sun.org.apache.xerces.internal.jaxp.SAXParserImpl$JAXPSAXParser.parse(SAXParserImpl.java:643)
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.UnmarshallerImpl.unmarshal0(UnmarshallerImpl.java:243)
-	at com.sun.xml.internal.bind.v2.runtime.unmarshaller.UnmarshallerImpl.unmarshal(UnmarshallerImpl.java:214)
-	at javax.xml.bind.helpers.AbstractUnmarshallerImpl.unmarshal(AbstractUnmarshallerImpl.java:157)
-	at javax.xml.bind.helpers.AbstractUnmarshallerImpl.unmarshal(AbstractUnmarshallerImpl.java:162)
-	at javax.xml.bind.helpers.AbstractUnmarshallerImpl.unmarshal(AbstractUnmarshallerImpl.java:171)
-	at javax.xml.bind.helpers.AbstractUnmarshallerImpl.unmarshal(AbstractUnmarshallerImpl.java:189)
-	at model.server.Server.main(Server.java:171)
-Caused by: java.lang.reflect.InvocationTargetException
-	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
-	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.lang.reflect.Method.invoke(Method.java:498)
-	at com.sun.xml.internal.bind.v2.runtime.JaxBeanInfo.invokeUnmarshallCallback(JaxBeanInfo.java:541)
-	... 23 more
-Caused by: java.lang.RuntimeException: Port failed while exporting remotes
-	at model.server.portsystem.Port.afterUnmarshal(Port.java:77)
-	... 28 more
-Caused by: java.rmi.server.ExportException: remote object implements illegal remote interface; nested exception is: 
-	java.lang.IllegalArgumentException: illegal remote method encountered: public abstract void model.server.interfaces.targetareas.OrdersDeliveryArea.putOrder(model.server.pdcsystem.contracts.TransportContract,java.util.Collection) throws model.server.exceptions.CapacityViolationException
-	at sun.rmi.server.UnicastServerRef.exportObject(UnicastServerRef.java:225)
-	at java.rmi.server.UnicastRemoteObject.exportObject(UnicastRemoteObject.java:383)
-	at java.rmi.server.UnicastRemoteObject.exportObject(UnicastRemoteObject.java:320)
-	at model.server.portsystem.Pier.exportRemote(Pier.java:95)
-	at model.server.portsystem.Port.afterUnmarshal(Port.java:74)
-	... 28 more
-Caused by: java.lang.IllegalArgumentException: illegal remote method encountered: public abstract void model.server.interfaces.targetareas.OrdersDeliveryArea.putOrder(model.server.pdcsystem.contracts.TransportContract,java.util.Collection) throws model.server.exceptions.CapacityViolationException
-	at sun.rmi.server.Util.checkMethod(Util.java:267)
-	at sun.rmi.server.Util.getRemoteInterfaces(Util.java:246)
-	at sun.rmi.server.Util.getRemoteInterfaces(Util.java:216)
-	at sun.rmi.server.Util.createProxy(Util.java:146)
-	at sun.rmi.server.UnicastServerRef.exportObject(UnicastServerRef.java:223)
-	... 32 more
-23:19:53,822 FATAL main Client:run:111 - Client server failed while starting
-java.rmi.server.ExportException: remote object implements illegal remote interface; nested exception is: 
-	java.lang.IllegalArgumentException: illegal remote method encountered: public default org.jscience.physics.amount.Amount model.server.interfaces.parties.Carrier.getCarrying()
-	at sun.rmi.server.UnicastServerRef.exportObject(UnicastServerRef.java:225)
-	at java.rmi.server.UnicastRemoteObject.exportObject(UnicastRemoteObject.java:383)
-	at java.rmi.server.UnicastRemoteObject.exportObject(UnicastRemoteObject.java:320)
-	at model.client.Client.exportRemote(Client.java:98)
-	at model.client.Client.run(Client.java:108)
-	at model.client.Client.main(Client.java:142)
-Caused by: java.lang.IllegalArgumentException: illegal remote method encountered: public default org.jscience.physics.amount.Amount model.server.interfaces.parties.Carrier.getCarrying()
-	at sun.rmi.server.Util.checkMethod(Util.java:267)
-	at sun.rmi.server.Util.getRemoteInterfaces(Util.java:246)
-	at sun.rmi.server.Util.getRemoteInterfaces(Util.java:216)
-	at sun.rmi.server.Util.createProxy(Util.java:146)
-	at sun.rmi.server.UnicastServerRef.exportObject(UnicastServerRef.java:223)
-	... 5 more
-23:26:02,617 FATAL main Client:run:111 - Client server failed while starting
-java.rmi.server.ExportException: remote object implements illegal remote interface; nested exception is: 
-	java.lang.IllegalArgumentException: illegal remote method encountered: public abstract model.client.ship.rating.Rating model.client.interfaces.Assessable.getRating()
-	at sun.rmi.server.UnicastServerRef.exportObject(UnicastServerRef.java:225)
-	at java.rmi.server.UnicastRemoteObject.exportObject(UnicastRemoteObject.java:383)
-	at java.rmi.server.UnicastRemoteObject.exportObject(UnicastRemoteObject.java:320)
-	at model.client.Client.exportRemote(Client.java:98)
-	at model.client.Client.run(Client.java:108)
-	at model.client.Client.main(Client.java:142)
-Caused by: java.lang.IllegalArgumentException: illegal remote method encountered: public abstract model.client.ship.rating.Rating model.client.interfaces.Assessable.getRating()
-	at sun.rmi.server.Util.checkMethod(Util.java:267)
-	at sun.rmi.server.Util.getRemoteInterfaces(Util.java:246)
-	at sun.rmi.server.Util.getRemoteInterfaces(Util.java:216)
-	at sun.rmi.server.Util.createProxy(Util.java:146)
-	at sun.rmi.server.UnicastServerRef.exportObject(UnicastServerRef.java:223)
-	... 5 more
-23:27:35,397 FATAL main Client:run:111 - Client server failed while starting
-java.rmi.server.ExportException: remote object implements illegal remote interface; nested exception is: 
-	java.lang.IllegalArgumentException: illegal remote method encountered: public abstract int java.lang.Comparable.compareTo(java.lang.Object)
-	at sun.rmi.server.UnicastServerRef.exportObject(UnicastServerRef.java:225)
-	at java.rmi.server.UnicastRemoteObject.exportObject(UnicastRemoteObject.java:383)
-	at java.rmi.server.UnicastRemoteObject.exportObject(UnicastRemoteObject.java:320)
-	at model.client.Client.exportRemote(Client.java:98)
-	at model.client.Client.run(Client.java:108)
-	at model.client.Client.main(Client.java:142)
-Caused by: java.lang.IllegalArgumentException: illegal remote method encountered: public abstract int java.lang.Comparable.compareTo(java.lang.Object)
-	at sun.rmi.server.Util.checkMethod(Util.java:267)
-	at sun.rmi.server.Util.getRemoteInterfaces(Util.java:246)
-	at sun.rmi.server.Util.getRemoteInterfaces(Util.java:216)
-	at sun.rmi.server.Util.createProxy(Util.java:146)
-	at sun.rmi.server.UnicastServerRef.exportObject(UnicastServerRef.java:223)
-	... 5 more
+20:18:23,814 FATAL main Server:main:185 - Unable to instantiate server
+java.rmi.server.ExportException: Port already in use: 2002; nested exception is: 
+	java.net.BindException: Address already in use: JVM_Bind
+	at sun.rmi.transport.tcp.TCPTransport.listen(TCPTransport.java:341)
+	at sun.rmi.transport.tcp.TCPTransport.exportObject(TCPTransport.java:249)
+	at sun.rmi.transport.tcp.TCPEndpoint.exportObject(TCPEndpoint.java:411)
+	at sun.rmi.transport.LiveRef.exportObject(LiveRef.java:147)
+	at sun.rmi.server.UnicastServerRef.exportObject(UnicastServerRef.java:234)
+	at sun.rmi.registry.RegistryImpl.setup(RegistryImpl.java:195)
+	at sun.rmi.registry.RegistryImpl.<init>(RegistryImpl.java:180)
+	at java.rmi.registry.LocateRegistry.createRegistry(LocateRegistry.java:203)
+	at model.server.Server.exportRemote(Server.java:115)
+	at model.server.Server.main(Server.java:183)
+Caused by: java.net.BindException: Address already in use: JVM_Bind
+	at java.net.DualStackPlainSocketImpl.bind0(Native Method)
+	at java.net.DualStackPlainSocketImpl.socketBind(DualStackPlainSocketImpl.java:106)
+	at java.net.AbstractPlainSocketImpl.bind(AbstractPlainSocketImpl.java:387)
+	at java.net.PlainSocketImpl.bind(PlainSocketImpl.java:190)
+	at java.net.ServerSocket.bind(ServerSocket.java:375)
+	at java.net.ServerSocket.<init>(ServerSocket.java:237)
+	at java.net.ServerSocket.<init>(ServerSocket.java:128)
+	at sun.rmi.transport.proxy.RMIDirectSocketFactory.createServerSocket(RMIDirectSocketFactory.java:45)
+	at sun.rmi.transport.proxy.RMIMasterSocketFactory.createServerSocket(RMIMasterSocketFactory.java:345)
+	at sun.rmi.transport.tcp.TCPEndpoint.newServerSocket(TCPEndpoint.java:666)
+	at sun.rmi.transport.tcp.TCPTransport.listen(TCPTransport.java:330)
+	... 9 more
+20:19:18,791 ERROR pool-1-thread-2 Ship:run:249 - Connection to the server is lost
+20:19:18,793 ERROR pool-1-thread-1 Ship:run:249 - Connection to the server is lost
+20:19:18,824 ERROR pool-1-thread-3 Ship:run:249 - Connection to the server is lost
+20:19:18,824 ERROR pool-1-thread-4 Ship:run:249 - Connection to the server is lost

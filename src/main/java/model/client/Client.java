@@ -56,6 +56,8 @@ public class Client implements Runnable {
     @XmlAttribute
     private int portNumber;
 
+    private volatile boolean terminated = false;
+
     /** default constructor for JAXB */
     public Client() {}
 
@@ -74,8 +76,8 @@ public class Client implements Runnable {
 
     {
         // log RMI-events
-        System.setProperty("java.rmi.server.logCalls", "true");
-        System.setProperty("sun.rmi.server.logLevel", "VERBOSE");
+//        System.setProperty("java.rmi.server.logCalls", "true");
+//        System.setProperty("sun.rmi.server.logLevel", "VERBOSE");
     }
 
     /** Set up client settings */
@@ -98,6 +100,10 @@ public class Client implements Runnable {
         UnicastRemoteObject.exportObject(ship, 0);
     }
 
+    private void unexportRemote(Ship ship) throws RemoteException {
+        UnicastRemoteObject.unexportObject(ship, true);
+    }
+
     @Override
     public void run() {
         for (Ship ship : ships) {
@@ -116,10 +122,21 @@ public class Client implements Runnable {
     }
 
     /** graceful shutdown client side */
-    public void shutdown() {
-        shipPool.shutdown();
+    public synchronized void shutdown() {
+        if (!terminated) {
+            shipPool.shutdownNow();
+            for (Ship ship : ships) {
+                try {
+                    unexportRemote(ship);
+                    System.out.println(ship.getName() + " unexported");
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
 
-        log.info("Client successfully shut down");
+            log.info("Client successfully shut down");
+            terminated = true;
+        }
     }
 
     public static void main(String[] args) {

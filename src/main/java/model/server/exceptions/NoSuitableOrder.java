@@ -7,8 +7,8 @@ import java.rmi.RemoteException;
 /**
  * @author Ilya Ivanov
  */
-public class NotInServiceException extends RemoteException {
-    public NotInServiceException(String s) {
+public class NoSuitableOrder extends RemoteException {
+    public NoSuitableOrder(String s) {
         super(s);
     }
 }

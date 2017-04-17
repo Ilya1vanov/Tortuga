@@ -5,6 +5,7 @@ import org.jscience.physics.amount.Amount;
 
 import javax.measure.quantity.Mass;
 import javax.measure.quantity.Volume;
+import java.io.Serializable;
 import java.util.Collection;
 
 /**
@@ -14,7 +15,7 @@ import java.util.Collection;
  * @author Ilya Ivanov
  */
 public interface Handbook<P extends Producible> {
-    /** @return unmodifiable collection of production names */
+    /** @return unmodifiable, non empty collection of production names */
     Collection<String> getNames();
 
     /** @return weight of specified production */

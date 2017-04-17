@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <client portName="Tortuga" portNumber="2002">
-    <ship name="a">
-        <displacement>100 t</displacement>
-        <volume>50 m³</volume>
-        <velocity>20 m/s</velocity>
-        <carrying>200 t</carrying>
+    <ship name="Black Pearl">
+        <displacement>1200 t</displacement>
+        <velocity>15 m/s</velocity>
+        <volume>2400 m³</volume>
+        <carrying>500 t</carrying>
     </ship>
-    <!--<ship name="b">-->
-        <!--<displacement>50 t</displacement>-->
-        <!--<velocity>15 m/s</velocity>-->
-        <!--<volume>10 m³</volume>-->
-        <!--<carrying>2 t</carrying>-->
-    <!--</ship>-->
-    <!--<ship name="c">-->
-        <!--<displacement>70 t</displacement>-->
-        <!--<velocity>30 m/s</velocity>-->
-        <!--<volume>20 m³</volume>-->
-        <!--<carrying>3 t</carrying>-->
-    <!--</ship>-->
-    <!--<ship name="d">-->
-        <!--<displacement>15 t</displacement>-->
-        <!--<velocity>25 m/s</velocity>-->
-        <!--<volume>30 m³</volume>-->
-        <!--<carrying>4 t</carrying>-->
-    <!--</ship>-->
+    <ship name="Diamond">
+        <displacement>1000 t</displacement>
+        <velocity>20 m/s</velocity>
+        <volume>2500 m³</volume>
+        <carrying>440 t</carrying>
+    </ship>
+    <ship name="Ghost">
+        <displacement>800 t</displacement>
+        <velocity>30 m/s</velocity>
+        <volume>1600 m³</volume>
+        <carrying>350 t</carrying>
+    </ship>
+    <ship name="The Flying Dutchman">
+        <displacement>600 t</displacement>
+        <velocity>35 m/s</velocity>
+        <volume>1200 m³</volume>
+        <carrying>320 t</carrying>
+    </ship>
 </client>

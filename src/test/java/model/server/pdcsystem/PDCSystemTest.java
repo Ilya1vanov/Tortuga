@@ -28,6 +28,7 @@ public class PDCSystemTest {
     SupplyingArea supplyingArea = mock(SupplyingArea.class);
     SingleFactory singleFactory = mock(SingleFactory.class);
     Handbook handbook = mock(Handbook.class);
+    private Producible producible = mock(Producible.class);
     PDCSystem SUT = new PDCSystem(supplyingArea, collectingArea, singleFactory, handbook);
 
     @Before
@@ -37,7 +38,7 @@ public class PDCSystemTest {
             when(collectingArea.isCollectingRequired()).thenReturn(true);
             doNothing().when(supplyingArea).supply(any());
             when(supplyingArea.isSupplyingRequired()).thenReturn(true);
-            when(singleFactory.create(anyString())).thenReturn(null);
+            when(singleFactory.create(anyString())).thenReturn(producible);
 
             when(handbook.getNames()).thenReturn(Arrays.asList("a", "b"));
             when(handbook.measureVolume(any())).thenReturn(Amount.valueOf(1, Volume.UNIT));
@@ -52,7 +53,4 @@ public class PDCSystemTest {
         SUT.run();
         verify(collectingArea).isCollectingRequired();
     }
-
-
-
 }

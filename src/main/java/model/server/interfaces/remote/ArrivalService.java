@@ -25,10 +25,5 @@ public interface ArrivalService<TS extends Transportable & Storable> extends Rem
      * @return interface for handling goods
      */
     <S extends MaritimeCarrier<TS>>
-    OrdersExchangeArea<TS> moor(S carrier, long estimatedDuration, TimeUnit unit) throws RemoteException;
-
-    /**
-     * Unmoor
-     */
-    void unmoor() throws RemoteException;
+    DepartService<TS> moor(S carrier, long estimatedDuration, TimeUnit unit) throws RemoteException;
 }
